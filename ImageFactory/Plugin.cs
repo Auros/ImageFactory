@@ -1,4 +1,5 @@
-﻿using IPA;
+﻿using ImageFactory.Installers;
+using IPA;
 using SiraUtil;
 using SiraUtil.Zenject;
 using IPALogger = IPA.Logging.Logger;
@@ -12,6 +13,7 @@ namespace ImageFactory
         public Plugin(IPALogger logger, Zenjector zenjector)
         {
             zenjector.On<PCAppInit>().Pseudo(Container => Container.BindLoggerAsSiraLogger(logger));
+            zenjector.OnApp<IFCoreInstaller>();
         }
 
         [OnEnable]
