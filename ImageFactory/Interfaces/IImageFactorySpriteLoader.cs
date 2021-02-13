@@ -5,6 +5,6 @@ namespace ImageFactory.Interfaces
 {
     public interface IImageFactorySpriteLoader
     {
-        public Task<IFImage?> LoadAsync(IFImage.Metadata metadata);
+        public Task<IFImage?> LoadAsync(IFImage.Metadata metadata, IAnimationStateUpdater? stateUpdater = null);
     }
 }

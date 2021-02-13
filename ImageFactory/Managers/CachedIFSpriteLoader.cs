@@ -34,7 +34,7 @@ namespace ImageFactory.Managers
             _cancellationTokenSource.Cancel();
         }
 
-        public async Task<IFImage?> LoadAsync(IFImage.Metadata metadata)
+        public async Task<IFImage?> LoadAsync(IFImage.Metadata metadata, IAnimationStateUpdater? _ = null)
         {
             string filePath = metadata.file.FullName;
             if (_imageCache.TryGetValue(filePath, out IFImage? image))
