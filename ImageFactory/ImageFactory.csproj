@@ -4,7 +4,7 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <OutputType>Library</OutputType>
         <LangVersion>8</LangVersion>
-        <Nullable>disable</Nullable>
+        <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <LocalRefsDir Condition="Exists('..\Refs')">..\Refs</LocalRefsDir>
         <BeatSaberDir>$(LocalRefsDir)</BeatSaberDir>
@@ -37,6 +37,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Reference Include="BSML">
+          <HintPath>$(BeatSaberDir)\Plugins\BSML.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
         <Reference Include="HMRendering">
           <HintPath>$(BeatSaberDir)\\Beat Saber_Data\Managed\HMRendering.dll</HintPath>
           <Private>False</Private>
