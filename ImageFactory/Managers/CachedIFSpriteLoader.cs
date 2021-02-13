@@ -67,6 +67,7 @@ namespace ImageFactory.Managers
                 }
                 if (!_imageCache.ContainsKey(filePath))
                     _imageCache.Add(filePath, image);
+
                 return image;
             }
             catch (Exception e)
