@@ -37,6 +37,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="Views\info-view.bsml" />
+    </ItemGroup>
+
+    <ItemGroup>
         <Reference Include="BSML">
           <HintPath>$(BeatSaberDir)\Plugins\BSML.dll</HintPath>
           <Private>False</Private>
@@ -125,6 +129,7 @@
 
     <ItemGroup>
         <EmbeddedResource Include="manifest.json" />
+        <EmbeddedResource Include="Views\info-view.bsml" />
     </ItemGroup>
 
     <ItemGroup>	

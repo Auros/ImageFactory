@@ -17,6 +17,7 @@ namespace ImageFactory
             zenjector.On<PCAppInit>().Pseudo(Container => Container.BindLoggerAsSiraLogger(logger));
             
             zenjector.OnApp<IFCoreInstaller>();
+            zenjector.OnMenu<IFUIInstaller>();
         }
 
         [OnEnable]
