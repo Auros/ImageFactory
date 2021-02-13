@@ -19,11 +19,14 @@ namespace ImageFactory.Managers
         {
             if (!_registeredAnimations.TryGetValue(id, out AnimationControllerData? animationData))
             {
+                // Add the new data to our registration.
                 animationData = new AnimationControllerData(processData.texture, processData.rect, processData.delays);
                 _registeredAnimations.Add(id, animationData);
             }
             else
             {
+                // Destroy the extra texture to free up RAM if
+                // a synchronization issue occurs.
                 UnityEngine.Object.Destroy(processData.texture);
             }
             return animationData;
@@ -35,12 +38,14 @@ namespace ImageFactory.Managers
                 _registeredAnimations.Remove(id);
         }
 
-        public void Tick()
+        public virtual void Tick()
         {
             if (!Enabled)
                 return;
 
             DateTime now = DateTime.UtcNow;
+
+            // For every animation controller we have, update the images under its effect.
             foreach (AnimationControllerData anim in _registeredAnimations.Values)
                 if (anim.IsPlaying)
                     anim.InvokeMethod<object, AnimationControllerData>("CheckFrame", now);

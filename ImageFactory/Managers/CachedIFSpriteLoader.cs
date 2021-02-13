@@ -31,10 +31,11 @@ namespace ImageFactory.Managers
 
         public void Dispose()
         {
+            // Cancel any operations that might be occuring.
             _cancellationTokenSource.Cancel();
         }
 
-        public async Task<IFImage?> LoadAsync(IFImage.Metadata metadata, IAnimationStateUpdater? _ = null)
+        public async Task<IFImage?> LoadAsync(IFImage.Metadata metadata, IAnimationStateUpdater? animationStateUpdater = null)
         {
             string filePath = metadata.file.FullName;
             if (_imageCache.TryGetValue(filePath, out IFImage? image))
@@ -46,6 +47,8 @@ namespace ImageFactory.Managers
                 _siraLog.Debug($"Loading Sprite: {metadata.file.Name}");
                 if (metadata.animationType is null)
                 {
+                    // Load images through our injected CachedMediaAsyncLoader
+
                     Stopwatch watch = Stopwatch.StartNew();
                     Sprite sprite = await _cachedMediaAsyncLoader.LoadSpriteAsync(filePath, _cancellationTokenSource.Token);
                     watch.Stop();
@@ -54,17 +57,25 @@ namespace ImageFactory.Managers
                 }
                 else
                 {
+                    // Separate system for loading gifs. Unfortunately we don't have the convenience of the CachedMediaAsyncLoader
+
                     Stopwatch watch = Stopwatch.StartNew();
+                    
+                    // Load the file to a byte array
                     using FileStream imageFS = metadata.file.OpenRead();
                     using MemoryStream imageMS = new MemoryStream();
                     await imageFS.CopyToAsync(imageMS);
                     byte[] imageBytes = imageMS.ToArray();
+
+                    // Process the animation data into BSML's animation controller data.
                     ProcessedAnimation animationData = await Utilities.ProcessAnimation(metadata.animationType.Value, imageBytes);
-                    AnimationControllerData data = _animationStateUpdater.Register(filePath, animationData);
+                    AnimationControllerData data = (animationStateUpdater ?? _animationStateUpdater).Register(filePath, animationData);
                     watch.Stop();
 
                     image = new IFImage(data, metadata, watch.Elapsed);
                 }
+
+                // Add it to the cache
                 if (!_imageCache.ContainsKey(filePath))
                     _imageCache.Add(filePath, image);
 
@@ -72,6 +83,7 @@ namespace ImageFactory.Managers
             }
             catch (Exception e)
             {
+                // It's not actually an image file? Corrupted? Who knows...
                 _siraLog.Error($"Could not load image {filePath}");
                 _siraLog.Error(e);
                 return null;

@@ -12,7 +12,10 @@ namespace ImageFactory
         [Init]
         public Plugin(IPALogger logger, Zenjector zenjector)
         {
+            // Bind our logger separately. It just makes things easier instead of having to pass it
+            // as a parameter into our core installer.
             zenjector.On<PCAppInit>().Pseudo(Container => Container.BindLoggerAsSiraLogger(logger));
+            
             zenjector.OnApp<IFCoreInstaller>();
         }
 
