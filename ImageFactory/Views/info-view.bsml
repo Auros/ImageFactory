@@ -1,3 +1,21 @@
-﻿<bg xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd">
-  <text text="Koala ♥" align="Center" font-size="10" />
+﻿<bg horizontal-fit="PreferredSize" vertical-fit="PreferredSize" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd">
+  <!--<text text="Koala ♥" align="Center" font-size="10" />-->
+  <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize">
+    <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize">
+      <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" spacing="2">
+        <image id="settings-image" pref-width="12" pref-height="12" hover-hint="Global Mod Settings" preserve-aspect="true" />
+        <image id="reset-image" pref-width="12" pref-height="12" hover-hint="Reset All Config Data" preserve-aspect="true" />
+        <image id="help-image" pref-width="12" pref-height="12" hover-hint="Help and Tutorial" preserve-aspect="true" />
+      </vertical>
+      <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize">
+        <image id="logo-image" pref-width="42" pref-height="42" preserve-aspect="true" />
+      </vertical>
+      <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" spacing="2">
+        <image id="github-image" pref-width="12" pref-height="12" hover-hint="View the GitHub page!" preserve-aspect="true" />
+        <image id="bandoot-image" pref-width="12" pref-height="12" hover-hint="The mod commissioner!" preserve-aspect="true" />
+        <image id="auros-image" pref-width="12" pref-height="12" hover-hint="The mod creator!" preserve-aspect="true" />
+      </vertical>
+    </horizontal>
+    <text text="~version" align="Center" font-size="7.5" />
+  </vertical>
 </bg>

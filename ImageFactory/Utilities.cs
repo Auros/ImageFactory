@@ -1,5 +1,6 @@
 ﻿using BeatSaberMarkupLanguage.Animations;
 using ImageFactory.Models;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -18,6 +19,19 @@ namespace ImageFactory
                 });
                 return source.Task;
             });
+        }
+
+        private static Material _roundEdge = null!;
+        public static Material UINoGlowRoundEdge
+        {
+            get
+            {
+                if (_roundEdge == null)
+                {
+                    _roundEdge = Resources.FindObjectsOfTypeAll<Material>().First(m => m.name == "UINoGlowRoundEdge");
+                }
+                return _roundEdge;
+            }
         }
     }
 }

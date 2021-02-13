@@ -16,6 +16,7 @@ namespace ImageFactory.Installers
 
             Container.BindInterfacesTo<CachedIFSpriteLoader>().AsSingle();
             Container.BindInterfacesTo<SimpleAnimationStateUpdater>().AsSingle();
+            Container.Bind<DynamicCacheMediaLoader>().AsSingle();
         }
     }
 }

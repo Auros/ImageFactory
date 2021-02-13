@@ -37,6 +37,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="Resources\help.png" />
+      <None Remove="Resources\logo.png" />
+      <None Remove="Resources\reset.png" />
+      <None Remove="Resources\settings.png" />
       <None Remove="Views\info-view.bsml" />
     </ItemGroup>
 
@@ -129,6 +133,10 @@
 
     <ItemGroup>
         <EmbeddedResource Include="manifest.json" />
+        <EmbeddedResource Include="Resources\help.png" />
+        <EmbeddedResource Include="Resources\logo.png" />
+        <EmbeddedResource Include="Resources\reset.png" />
+        <EmbeddedResource Include="Resources\settings.png" />
         <EmbeddedResource Include="Views\info-view.bsml" />
     </ItemGroup>
 
