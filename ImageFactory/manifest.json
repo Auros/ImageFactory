@@ -1,0 +1,13 @@
+﻿{
+  "$schema": "https://raw.githubusercontent.com/bsmg/BSIPA-MetadataFileSchema/master/Schema.json",
+  "id": "ImageFactory",
+  "name": "ImageFactory",
+  "author": "Auros",
+  "version": "1.0.0",
+  "description": "Place and customize images throughout your game.",
+  "gameVersion": "1.13.2",
+  "dependsOn": {
+    "BSIPA": "^4.1.4",
+    "SiraUtil": "^2.4.0"
+  }
+}
