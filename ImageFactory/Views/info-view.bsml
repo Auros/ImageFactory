@@ -4,18 +4,39 @@
     <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize">
       <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" spacing="2">
         <image id="settings-image" pref-width="12" pref-height="12" hover-hint="Global Mod Settings" preserve-aspect="true" />
-        <image id="reset-image" pref-width="12" pref-height="12" hover-hint="Reset All Config Data" preserve-aspect="true" />
-        <image id="help-image" pref-width="12" pref-height="12" hover-hint="Help and Tutorial" preserve-aspect="true" />
+        <clickable-image id="reset-image" pref-width="12" pref-height="12" hover-hint="Reset All Config Data" preserve-aspect="true" on-click="clicked-reset" />
+        <clickable-image id="help-image" pref-width="12" pref-height="12" hover-hint="Help and Tutorial" preserve-aspect="true" on-click="clicked-help" />
       </vertical>
       <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize">
         <image id="logo-image" pref-width="42" pref-height="42" preserve-aspect="true" />
       </vertical>
       <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" spacing="2">
-        <image id="github-image" pref-width="12" pref-height="12" hover-hint="View the GitHub page!" preserve-aspect="true" />
-        <image id="bandoot-image" pref-width="12" pref-height="12" hover-hint="The mod commissioner!" preserve-aspect="true" />
-        <image id="auros-image" pref-width="12" pref-height="12" hover-hint="The mod creator!" preserve-aspect="true" />
+        <clickable-image id="github-image" pref-width="12" pref-height="12" hover-hint="View the GitHub page!" preserve-aspect="true" on-click="clicked-github" />
+        <clickable-image id="bandoot-image" pref-width="12" pref-height="12" hover-hint="The mod commissioner!" preserve-aspect="true" on-click="clicked-bandoot" />
+        <clickable-image id="auros-image" pref-width="12" pref-height="12" hover-hint="The mod creator!" preserve-aspect="true" on-click="clicked-auros" />
       </vertical>
     </horizontal>
     <text text="~version" align="Center" font-size="7.5" />
   </vertical>
+
+  <modal size-delta-x="90" size-delta-y="50" show-event="show-modal" hide-event="dismiss-modal" clickerino-offerino-closerino="true">
+    <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="85" pref-height="50" pad="1" spacing="1">
+      <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="85" pref-height="9">
+        <image id="modal-image" preserve-aspect="true" pref-width="9" pref-height="9" />
+        <horizontal horizontal-fit="Unconstrained" vertical-fit="Unconstrained" pref-width="70" pref-height="10">
+          <text text="~modal-title" align="CaplineLeft" font-size="10" />
+        </horizontal>
+      </horizontal>
+      <image src="ImageFactory.Resources.pixel.png" pref-width="85" pref-height="0.1" />
+      <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="85" preferred-height="37">
+        <vertical pref-width="83" preferred-height="28">
+          <text text="~modal-text" word-wrapping="true" />
+        </vertical>
+        <horizontal>
+          <button id="dismiss-button" text="Dismiss" pref-width="42" event-click="dismiss-modal" italics="false" />
+          <button id="action-button" text="~modal-action-text" pref-width="42" on-click="modal-action" italics="false" />
+        </horizontal>
+      </vertical>
+    </vertical>
+  </modal>
 </bg>
