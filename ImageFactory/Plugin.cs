@@ -2,12 +2,13 @@
 using IPA;
 using IPA.Loader;
 using SiraUtil;
+using SiraUtil.Attributes;
 using SiraUtil.Zenject;
 using IPALogger = IPA.Logging.Logger;
 
 namespace ImageFactory
 {
-    [Plugin(RuntimeOptions.DynamicInit)]
+    [Plugin(RuntimeOptions.DynamicInit), Slog]
     public class Plugin
     {
         [Init]
@@ -23,6 +24,9 @@ namespace ImageFactory
             
             zenjector.OnApp<IFCoreInstaller>();
             zenjector.OnMenu<IFUIInstaller>();
+
+            zenjector.OnMenu<IFImageInstaller>();
+            zenjector.OnGame<IFImageInstaller>();
         }
 
         [OnEnable]

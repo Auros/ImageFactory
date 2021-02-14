@@ -11,14 +11,14 @@ namespace ImageFactory.Models
         public readonly int height;
         public readonly Sprite sprite;
         public readonly TimeSpan loadTime;
-        public readonly Metadata imageMetadata;
+        public readonly Metadata metadata;
         public readonly AnimationControllerData? animationData;
 
-        public IFImage(Sprite sprite, Metadata metadata, TimeSpan timeToLoad)
+        public IFImage(Sprite sprite, Metadata imageMetadata, TimeSpan timeToLoad)
         {
             this.sprite = sprite;
             loadTime = timeToLoad;
-            imageMetadata = metadata;
+            metadata = imageMetadata;
             width = sprite.texture.width;
             height = sprite.texture.height;
         }
@@ -27,7 +27,7 @@ namespace ImageFactory.Models
         {
             loadTime = timeToLoad;
             animationData = animData;
-            imageMetadata = metadata;
+            this.metadata = metadata;
             sprite = animData.sprite;
             width = sprite.texture.width;
             height = sprite.texture.height;
