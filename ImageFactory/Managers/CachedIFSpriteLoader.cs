@@ -51,6 +51,7 @@ namespace ImageFactory.Managers
 
                     Stopwatch watch = Stopwatch.StartNew();
                     Sprite sprite = await _cachedMediaAsyncLoader.LoadSpriteAsync(filePath, _cancellationTokenSource.Token);
+                    sprite.texture.wrapMode = TextureWrapMode.Clamp;
                     watch.Stop();
 
                     image = new IFImage(sprite, metadata, watch.Elapsed);
@@ -69,7 +70,7 @@ namespace ImageFactory.Managers
 
                     // Process the animation data into BSML's animation controller data.
                     ProcessedAnimation animationData = await Utilities.ProcessAnimation(metadata.animationType.Value, imageBytes);
-                    AnimationControllerData data = (animationStateUpdater ?? _animationStateUpdater).Register(filePath, animationData);
+                    RendererAnimationControllerData data = (animationStateUpdater ?? _animationStateUpdater).Register(filePath, animationData);
                     watch.Stop();
 
                     image = new IFImage(data, metadata, watch.Elapsed);

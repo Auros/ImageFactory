@@ -12,6 +12,7 @@ namespace ImageFactory.Models
 
         public ProcessedAnimation(Texture2D texture, Rect[] rect, float[] delays, int width, int height)
         {
+            texture.wrapMode = TextureWrapMode.Clamp;
             this.texture = texture;
             this.rect = rect;
             this.delays = delays;

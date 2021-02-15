@@ -1,4 +1,7 @@
-﻿using ImageFactory.Managers;
+﻿using ImageFactory.Components;
+using ImageFactory.Managers;
+using System.Linq;
+using UnityEngine;
 using Zenject;
 
 namespace ImageFactory.Installers
@@ -18,6 +21,18 @@ namespace ImageFactory.Installers
             Container.BindInterfacesTo<SimpleAnimationStateUpdater>().AsSingle();
             Container.BindInterfacesAndSelfTo<MetadataStore>().AsSingle();
             Container.Bind<DynamicCacheMediaLoader>().AsSingle();
+
+            Container.BindMemoryPool<IFSprite, IFSprite.Pool>().WithInitialSize(5).FromComponentInNewPrefab(ImageTemplate());
+        }
+
+        private IFSprite ImageTemplate()
+        {
+            GameObject root = new GameObject("IF Image");
+            IFSprite ifc = root.AddComponent<IFSprite>();
+            SpriteRenderer renderer = root.AddComponent<SpriteRenderer>();
+            ifc.Setup(renderer, BeatSaberMarkupLanguage.Utilities.ImageResources.NoGlowMat, Resources.FindObjectsOfTypeAll<Shader>().First(s => s.name == "Custom/Sprite"));
+            root.gameObject.SetActive(false);
+            return ifc;
         }
     }
 }

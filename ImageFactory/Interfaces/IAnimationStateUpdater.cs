@@ -16,7 +16,7 @@ namespace ImageFactory.Interfaces
         /// <param name="id">The ID to track this animation.</param>
         /// <param name="processData">The raw animation data.</param>
         /// <returns></returns>
-        AnimationControllerData Register(string id, ProcessedAnimation processData);
+        RendererAnimationControllerData Register(string id, ProcessedAnimation processData);
 
         /// <summary>
         /// Unregister animation data from this state updater.

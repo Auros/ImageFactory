@@ -11,16 +11,16 @@ namespace ImageFactory.Managers
     // Mostly borrowed from BSML's AnimationController
     internal class SimpleAnimationStateUpdater : ITickable, IAnimationStateUpdater
     {
-        private readonly Dictionary<string, AnimationControllerData> _registeredAnimations = new Dictionary<string, AnimationControllerData>();
+        private readonly Dictionary<string, RendererAnimationControllerData> _registeredAnimations = new Dictionary<string, RendererAnimationControllerData>();
 
-        public bool Enabled { get; set; }
+        public bool Enabled { get; set; } = true;
 
-        public AnimationControllerData Register(string id, ProcessedAnimation processData)
+        public RendererAnimationControllerData Register(string id, ProcessedAnimation processData)
         {
-            if (!_registeredAnimations.TryGetValue(id, out AnimationControllerData? animationData))
+            if (!_registeredAnimations.TryGetValue(id, out RendererAnimationControllerData? animationData))
             {
                 // Add the new data to our registration.
-                animationData = new AnimationControllerData(processData.texture, processData.rect, processData.delays);
+                animationData = new RendererAnimationControllerData(processData.texture, processData.rect, processData.delays);
                 _registeredAnimations.Add(id, animationData);
             }
             else
@@ -46,9 +46,9 @@ namespace ImageFactory.Managers
             DateTime now = DateTime.UtcNow;
 
             // For every animation controller we have, update the images under its effect.
-            foreach (AnimationControllerData anim in _registeredAnimations.Values)
+            foreach (RendererAnimationControllerData anim in _registeredAnimations.Values)
                 if (anim.IsPlaying)
-                    anim.InvokeMethod<object, AnimationControllerData>("CheckFrame", now);
+                    anim.InvokeMethod<object, RendererAnimationControllerData>("CheckFrame", now);
         }
     }
 }
