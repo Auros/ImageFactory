@@ -23,9 +23,15 @@ namespace ImageFactory
         {
             await SiraUtil.Utilities.AwaitSleep(3000);
 
-            var ifs = _ifSpritePool.Spawn();
-            ifs.Image = _imageManager.LoadedImages().First();
-            ifs.Position = new UnityEngine.Vector3(0f, 5f, 0f);
+            /* float v = -3;
+
+            for (int i = 0; i < 4; i++)
+            {
+                var ifs = _ifSpritePool.Spawn();
+                ifs.Image = _imageManager.LoadedImages().ElementAt(i);
+                ifs.Position = new UnityEngine.Vector3(v, 5f, 0f);
+                v++;
+            }*/
         }
     }
 }

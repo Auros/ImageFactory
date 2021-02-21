@@ -15,6 +15,7 @@ namespace ImageFactory.Installers
             Container.BindInterfacesTo<MenuButtonManager>().AsSingle();
 
             Container.Bind<IFInfoView>().FromNewComponentAsViewController().AsSingle();
+            Container.Bind<IFNewImageView>().FromNewComponentAsViewController().AsSingle();
             Container.Bind<ImageFactoryFlowCoordinator>().FromNewComponentOnNewGameObject(nameof(ImageFactoryFlowCoordinator)).AsSingle();
         }
     }

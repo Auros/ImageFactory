@@ -37,15 +37,17 @@ namespace ImageFactory.Models
         {
             public readonly long size;
             public readonly FileInfo file;
+            public readonly IFSaveData? saveData;
             public readonly AnimationType? animationType;
 
             private const string gifExtension = ".gif";
             private const string apngExtension = ".apng";
 
-            public Metadata(FileInfo info)
+            public Metadata(FileInfo info, IFSaveData? imageSaveData = null)
             {
                 file = info;
                 size = info.Length;
+                saveData = imageSaveData;
 
                 string extension = Path.GetExtension(file.FullName);
                 animationType = extension switch

@@ -45,7 +45,7 @@ namespace ImageFactory.Managers
                 }
             }
             watch.Stop();
-            _siraLog.Debug($"Took {watch.Elapsed.TotalSeconds} seconds (ASYNC) to initialize the Image Factory with {count} active images.");
+            _siraLog.Debug($"Took {watch.Elapsed.TotalSeconds} seconds (asynchronous non-blocking) to initialize the Image Factory with {count} active images.");
         }
 
         public IEnumerable<IFImage> LoadedImages()

@@ -43,6 +43,7 @@
       <None Remove="Resources\reset.png" />
       <None Remove="Resources\settings.png" />
       <None Remove="Views\info-view.bsml" />
+      <None Remove="Views\new-image-view.bsml" />
     </ItemGroup>
 
     <ItemGroup>
@@ -140,6 +141,7 @@
         <EmbeddedResource Include="Resources\reset.png" />
         <EmbeddedResource Include="Resources\settings.png" />
         <EmbeddedResource Include="Views\info-view.bsml" />
+        <EmbeddedResource Include="Views\new-image-view.bsml" />
     </ItemGroup>
 
     <ItemGroup>	

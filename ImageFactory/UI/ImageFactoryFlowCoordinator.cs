@@ -7,12 +7,14 @@ namespace ImageFactory.UI
     internal class ImageFactoryFlowCoordinator : FlowCoordinator
     {
         private IFInfoView _infoView = null!;
+        private IFNewImageView _newImageView = null!;
         private MainFlowCoordinator _mainFlowCoordinator = null!;
 
         [Inject]
-        public void Inject(IFInfoView infoView, MainFlowCoordinator mainFlowCoordinator)
+        public void Inject(IFInfoView infoView, IFNewImageView newImageView, MainFlowCoordinator mainFlowCoordinator)
         {
             _infoView = infoView;
+            _newImageView = newImageView;
             _mainFlowCoordinator = mainFlowCoordinator;
         }
 
@@ -26,7 +28,7 @@ namespace ImageFactory.UI
 
                 // Upon activating for the first time, let's provide our initial view controllers for this flow coordinator
                 // to use. The ScreenSystem needs at a main screen and will break if there is none after activating.
-                ProvideInitialViewControllers(_infoView);
+                ProvideInitialViewControllers(_infoView, _newImageView);
             }
         }
 

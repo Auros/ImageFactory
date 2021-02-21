@@ -146,7 +146,7 @@ namespace ImageFactory.UI
 
             _resetSubIcon = new ClickableSubIcon(
                 "Reset",
-                "Note: This is a permanent action that can't be undone. This will reset all of your settings. (Your images not be deleted).",
+                "Note: This is a permanent action that can't be undone. This will reset all of your settings. (Your images will not be deleted).",
                 "<color=red>Reset</color>",
                 _resetImage.sprite,
                 () => { }); // TODO: Reset Config
