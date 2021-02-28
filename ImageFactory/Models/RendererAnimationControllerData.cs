@@ -1,6 +1,7 @@
 ﻿using BeatSaberMarkupLanguage.Animations;
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace ImageFactory.Models
 {
@@ -42,6 +43,15 @@ namespace ImageFactory.Models
                     uvIndex = 0;
             }
             while (!_isDelayConsistent && delays[uvIndex] == 0);
+
+            if (activeImages.Count != 0)
+            {
+                foreach (Image image in activeImages)
+                {
+                    if (image.isActiveAndEnabled)
+                        image.sprite = sprites[uvIndex];
+                }
+            }
         }
     }
 }

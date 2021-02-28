@@ -4,22 +4,22 @@
       <text text="New Image" align="Center" font-size="7" />
     </horizontal>
     <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="90" pref-height="60">
-      <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="80" pref-height="60">
+      <custom-list id="image-list" cell-size="10" pref-width="80" pref-height="60" visible-cells="6">
         <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="80" pref-height="10">
           <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="9" pref-height="9">
-            <image src="https://cdn.discordapp.com/avatars/620095184168026132/89a9e8a3e9370695c8ce338cff386d2b.png?size=512" />
+            <image id="preview" preserve-aspect="true" />
           </vertical>
           <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="59" pref-height="9">
-            <text text="image.png" align="Left" />
+            <text id="file-name" align="Left" />
           </vertical>
-          <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="9" pref-height="9">
-            <button text="+" pref-width="10" pref-height="9" />
+          <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="10" pref-height="9">
+            <button text="+" pref-width="9" pref-height="9" />
           </vertical>
         </horizontal>
-      </vertical>
+      </custom-list>
       <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="10" pref-height="100">
-        <page-button dir="Up" pref-width="10" />
-        <page-button dir="Down" pref-width="10" />
+        <page-button dir="Up" pref-width="10" event-click="image-list#PageUp" />
+        <page-button dir="Down" pref-width="10" event-click="image-list#PageDown" />
       </vertical>
     </horizontal>
   </vertical>

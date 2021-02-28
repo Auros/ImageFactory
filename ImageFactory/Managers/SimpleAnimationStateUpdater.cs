@@ -1,5 +1,4 @@
-﻿using BeatSaberMarkupLanguage.Animations;
-using ImageFactory.Interfaces;
+﻿using ImageFactory.Interfaces;
 using ImageFactory.Models;
 using IPA.Utilities;
 using System;
