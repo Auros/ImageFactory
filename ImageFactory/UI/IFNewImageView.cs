@@ -5,6 +5,7 @@ using BeatSaberMarkupLanguage.ViewControllers;
 using HMUI;
 using ImageFactory.Managers;
 using ImageFactory.Models;
+using System;
 using System.Threading.Tasks;
 using Tweening;
 using UnityEngine;
@@ -20,14 +21,20 @@ namespace ImageFactory.UI
 
         #region Injected Dependencies
 
-        [Inject]
-        protected readonly TweeningManager _tweeningManager = null!;
+        protected TweeningManager _tweeningManager = null!;
+
+        protected MetadataStore _metadataStore = null!;
+
+        protected ImageManager _imageManager = null!;
 
         [Inject]
-        protected readonly MetadataStore _metadataStore = null!;
-
-        [Inject]
-        protected readonly ImageManager _imageManager = null!;
+        protected void Construct(DiContainer container, ImageManager imageManager, MetadataStore metadataStore, TweeningManager tweeningManager)
+        {
+            _selectImageModalHost = container.Instantiate<SelectImageModalHost>();
+            _tweeningManager = tweeningManager;
+            _metadataStore = metadataStore;
+            _imageManager = imageManager;
+        }
 
         #endregion
 
@@ -69,6 +76,9 @@ namespace ImageFactory.UI
 
         #region Image Loader
 
+        [UIValue("select-image-modal-host")]
+        protected SelectImageModalHost _selectImageModalHost = null!;
+
         [UIComponent("image-list")]
         protected readonly CustomCellListTableData _imageList = null!;
         private bool _didLoad = false;
@@ -86,8 +96,13 @@ namespace ImageFactory.UI
             _didLoad = true;
 
             foreach (var image in loadedImages)
-                _imageList.data.Add(new NewImageCell(image));
+                _imageList.data.Add(new NewImageCell(image, ClickedImageCell));
             _imageList.tableView.ReloadData();
+        }
+
+        private void ClickedImageCell(IFImage image)
+        {
+            _selectImageModalHost.Present(image);
         }
 
         #endregion
@@ -103,6 +118,7 @@ namespace ImageFactory.UI
         private class NewImageCell
         {
             public readonly IFImage image;
+            public readonly Action<IFImage> createAction;
 
             [UIComponent("preview")]
             protected readonly ImageView _previewImage = null!;
@@ -110,9 +126,10 @@ namespace ImageFactory.UI
             [UIComponent("file-name")]
             protected readonly CurvedTextMeshPro _fileName = null!;
 
-            public NewImageCell(IFImage image)
+            public NewImageCell(IFImage image, Action<IFImage> createClicked)
             {
                 this.image = image;
+                createAction = createClicked;
             }
 
             [UIAction("#post-parse")]
@@ -130,6 +147,12 @@ namespace ImageFactory.UI
                     _previewImage.material = Utilities.UINoGlowRoundEdge;
                 }
                 _fileName.text = image.metadata.file.Name;
+            }
+
+            [UIAction("clicked-create-button")]
+            protected void ClickedCreateButton()
+            {
+                createAction?.Invoke(image);
             }
         }
     }

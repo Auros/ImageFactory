@@ -13,7 +13,7 @@
             <text id="file-name" align="Left" />
           </vertical>
           <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="10" pref-height="9">
-            <button text="+" pref-width="9" pref-height="9" />
+            <button text="+" pref-width="9" pref-height="9" on-click="clicked-create-button" />
           </vertical>
         </horizontal>
       </custom-list>
@@ -27,4 +27,26 @@
     <loading pref-width="30" pref-height="30" />
     <text text="Loading Images..." align="Center" font-size="5" />
   </vertical>
+  <macro.as-host host="select-image-modal-host">
+    <modal size-delta-x="62" size-delta-y="42" show-event="show-modal" hide-event="hide-modal" clickerino-offerino-closerino="true">
+      <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="60" pref-height="40">
+        <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="60" pref-height="30">
+          <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="30" pref-height="30">
+            <image id="preview" pref-width="27" pref-height="27" preserve-aspect="true" />
+          </vertical>
+          <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="30" pref-height="30" pad="2">
+            <text id="anim-text" text="Animated: No" align="Left" />
+            <text id="width-text" text="Width: 512px" align="Left" />
+            <text id="height-text" text="Height: 512px" align="Left" />
+            <text id="file-size-text" text="File Size: 51 KB" align="Left" />
+            <text id="load-time-text" text="Load Time: 236 ms" align="Left" />
+          </vertical>
+        </horizontal>
+        <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="60" pref-height="10">
+          <button text="Cancel" pref-width="25" pref-height="8" event-click="hide-modal" />
+          <button text="Create" pref-width="25" pref-height="8" />
+        </horizontal>
+      </vertical>
+    </modal>
+  </macro.as-host>
 </bg>
