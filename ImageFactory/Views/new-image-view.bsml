@@ -1,3 +1,30 @@
 ﻿<bg xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd">
-  <text text="I AM SO FUCKING CONFUSED" align="Center" font-size="10" />
+  <vertical id="selection-root" active="false" horizontal-fit="PreferredSize" vertical-fit="PreferredSize">
+    <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="90" pref-height="10" bg="panel-top">
+      <text text="New Image" align="Center" font-size="7" />
+    </horizontal>
+    <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="90" pref-height="60">
+      <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="80" pref-height="60">
+        <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="80" pref-height="10">
+          <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="9" pref-height="9">
+            <image src="https://cdn.discordapp.com/avatars/620095184168026132/89a9e8a3e9370695c8ce338cff386d2b.png?size=512" />
+          </vertical>
+          <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="59" pref-height="9">
+            <text text="image.png" align="Left" />
+          </vertical>
+          <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="9" pref-height="9">
+            <button text="+" pref-width="10" pref-height="9" />
+          </vertical>
+        </horizontal>
+      </vertical>
+      <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="10" pref-height="100">
+        <page-button dir="Up" pref-width="10" />
+        <page-button dir="Down" pref-width="10" />
+      </vertical>
+    </horizontal>
+  </vertical>
+  <vertical id="loading-root" active="true" horizontal-fit="PreferredSize" vertical-fit="PreferredSize">
+    <loading pref-width="30" pref-height="30" />
+    <text text="Loading Images..." align="Center" font-size="5" />
+  </vertical>
 </bg>
