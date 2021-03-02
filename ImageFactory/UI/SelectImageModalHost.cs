@@ -3,8 +3,8 @@ using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Parser;
 using HMUI;
 using ImageFactory.Models;
+using System;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace ImageFactory.UI
 {
@@ -31,6 +31,7 @@ namespace ImageFactory.UI
         [UIComponent("load-time-text")]
         protected readonly CurvedTextMeshPro _loadTimeText = null!;
 
+        private Action? _callback = null;
         private Material _originalMaterial = null!;
         private AnimationStateUpdater _animationState = null!;
         private AnimationControllerData? _lastControllerData;
@@ -43,8 +44,9 @@ namespace ImageFactory.UI
             _animationState = _preview.gameObject.AddComponent<AnimationStateUpdater>();
         }
 
-        public void Present(IFImage image)
+        public void Present(IFImage image, Action<IFImage> callback)
         {
+            _callback = delegate () { callback.Invoke(image); };
             if (_lastControllerData != null && _lastControllerData.activeImages.Contains(_preview))
                 _lastControllerData.activeImages.Remove(_preview);
             if (image.animationData != null)
@@ -68,6 +70,11 @@ namespace ImageFactory.UI
             _fileSizeText.text = $"File Size: {Mathf.RoundToInt(image.metadata.size / (float)fileSize.Item1)} {fileSize.Item2}";
             _loadTimeText.text = $"Load Time: {image.loadTime.Milliseconds} ms";
             parserParams.EmitEvent("show-modal");
+        }
+
+        protected void Create()
+        {
+            _callback?.Invoke();
         }
 
         public void Dismiss()

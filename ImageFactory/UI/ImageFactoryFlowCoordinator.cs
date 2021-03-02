@@ -1,6 +1,7 @@
 ﻿using HMUI;
 using BeatSaberMarkupLanguage;
 using Zenject;
+using ImageFactory.Models;
 
 namespace ImageFactory.UI
 {
@@ -30,6 +31,18 @@ namespace ImageFactory.UI
                 // to use. The ScreenSystem needs at a main screen and will break if there is none after activating.
                 ProvideInitialViewControllers(_infoView, _newImageView);
             }
+            _newImageView.NewImageRequested += NewImageView_NewImageRequested;
+        }
+
+        private void NewImageView_NewImageRequested(IFImage image)
+        {
+
+        }
+
+        protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
+        {
+            _newImageView.NewImageRequested -= NewImageView_NewImageRequested;
+            base.DidDeactivate(removedFromHierarchy, screenSystemDisabling);
         }
 
         protected override void BackButtonWasPressed(ViewController topViewController)

@@ -17,7 +17,7 @@ namespace ImageFactory.UI
     [ViewDefinition("ImageFactory.Views.new-image-view.bsml")]
     internal class IFNewImageView : BSMLAutomaticViewController
     {
-        //public event Action<IFImage>? NewImageRequested;
+        public event Action<IFImage>? NewImageRequested;
 
         #region Injected Dependencies
 
@@ -102,7 +102,12 @@ namespace ImageFactory.UI
 
         private void ClickedImageCell(IFImage image)
         {
-            _selectImageModalHost.Present(image);
+            _selectImageModalHost.Present(image, ClickedImageCreate);
+        }
+
+        private void ClickedImageCreate(IFImage image)
+        {
+            NewImageRequested?.Invoke(image);
         }
 
         #endregion
