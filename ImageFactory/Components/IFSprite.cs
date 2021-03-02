@@ -12,10 +12,22 @@ namespace ImageFactory.Components
         [SerializeField] private SpriteRenderer _spriteRenderer = null!;
         private RendererAnimationStateUpdater? _animator = null!;
 
+        public Vector2 Size
+        {
+            get => new Vector2(transform.localScale.x, transform.localScale.y);
+            set => transform.localScale = new Vector3(value.x, value.y, 1f);
+        }
+
         public Vector3 Position
         {
             get => transform.position + new Vector3(_spriteRenderer.bounds.extents.x, _spriteRenderer.bounds.extents.y, 0);
             set => transform.position = value - new Vector3(_spriteRenderer.bounds.extents.x, _spriteRenderer.bounds.extents.y, 0);
+        }
+
+        public Quaternion Rotation
+        {
+            get => transform.rotation;
+            set => transform.rotation = value;
         }
 
         public IFImage? Image
@@ -34,7 +46,7 @@ namespace ImageFactory.Components
                     }
                 }
                 else
-                {
+                { 
                     if (_image.metadata.animationType is null)
                     {
                         if (_animator != null)
