@@ -46,8 +46,11 @@ namespace ImageFactory.Managers
 
         public void SaveAndDismiss()
         {
-            if (_lastClone != null && _lastImage != null)
-                _lastClone.LocalFilePath = _lastImage.metadata.file.Name;
+            if (_lastClone != null)
+            {
+                Position = Position;
+                Rotation = Rotation;
+            }
             _saveAction?.Invoke();
             if (_activeSprite != null)
             {
@@ -58,6 +61,12 @@ namespace ImageFactory.Managers
         }
 
         #region Properties
+
+        public bool Enabled
+        {
+            get => _lastClone?.Enabled ?? default;
+            set { if (_lastClone != null) _lastClone.Enabled = value; }
+        }
 
         public string Name
         {
@@ -78,7 +87,7 @@ namespace ImageFactory.Managers
             }
         }
 
-        public Vector2 Position
+        public Vector3 Position
         {
             get => (_activeSprite != null) ? _activeSprite.Position : default;
             set

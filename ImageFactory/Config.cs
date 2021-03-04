@@ -16,5 +16,7 @@ namespace ImageFactory
 
         [NonNullable, UseConverter(typeof(ListConverter<IFSaveData>))]
         public virtual List<IFSaveData> SaveData { get; set; } = new List<IFSaveData>();
+
+        public virtual void Changed() { }
     }
 }

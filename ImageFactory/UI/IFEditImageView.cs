@@ -21,6 +21,7 @@ namespace ImageFactory.UI
         public event Action? Cancelled;
         public event Action? Saved;
 
+        private Config _config = null!;
         private DiContainer _container = null!;
         private ViewController _dummyView = null!;
         private FloatingScreen _floatingScreen = null!; 
@@ -40,6 +41,13 @@ namespace ImageFactory.UI
         [UIValue("presentation-host")]
         protected PresentationHost _presentationHost = null!;
 
+        [UIValue("enabled")]
+        protected bool Enabled
+        {
+            get => _imageEditorManager.Enabled;
+            set { _imageEditorManager.Enabled = value; NotifyPropertyChanged(); }
+        }
+
         [UIValue("scale-x")]
         protected float XScale
         {
@@ -55,8 +63,9 @@ namespace ImageFactory.UI
         }
 
         [Inject]
-        public void Construct(DiContainer container, ImageEditorManager imageEditorManager, PhysicsRaycasterWithCache cacheRaycaster, LevelSearchViewController levelSearchViewController)
+        public void Construct(Config config, DiContainer container, ImageEditorManager imageEditorManager, PhysicsRaycasterWithCache cacheRaycaster, LevelSearchViewController levelSearchViewController)
         {
+            _config = config;
             _container = container;
             _imageEditorManager = imageEditorManager;
             _presentationHost = container.Instantiate<PresentationHost>();
@@ -74,33 +83,48 @@ namespace ImageFactory.UI
             _floatingScreen.gameObject.SetActive(false);
         }
 
-        public void EnableEditing(IFImage image)
+        public void EnableEditing(IFImage image, IFSaveData? data = null)
         {
             // Uses our dummy view controller to use the BSML handle because I am lazy
             // Then, resize the handle accordingly, setup our editor sprite instance,
             // set the position of our handle TO the image and THEN make the sprite a
             // child of the handle screen.
-            var saveData = new IFSaveData { Position = new Vector3(0f, 2f, 2f), Name = image.metadata.file.Name };
+            var saveData = data ?? new IFSaveData { Enabled = true, Position = new Vector3(0f, 2f, 2f), Name = image.metadata.file.Name, LocalFilePath = image.metadata.file.Name };
+            bool isNew = data == null;
+
             _floatingScreen.gameObject.SetActive(true);
             _floatingScreen.SetRootViewController(_dummyView, AnimationType.None);
             _floatingScreen.handle.transform.localScale = Vector3.one / 5f;
             _floatingScreen.handle.gameObject.transform.localPosition = Vector3.zero;
-            Transform tForm = _imageEditorManager.Present(image, saveData, SavedData);
+            Transform tForm = _imageEditorManager.Present(image, saveData, clone =>
+            {
+                var val = _presentationHost.Export();
+
+                saveData.Name = clone.Name;
+                saveData.Size = clone.Size;
+                saveData.Enabled = clone.Enabled;
+                saveData.Position = clone.Position;
+                saveData.Rotation = clone.Rotation;
+                saveData.Presentation.PresentationID = val.Item1;
+                saveData.Presentation.Duration = val.Item3 ?? 0f;
+                saveData.Presentation.Value = val.Item2;
+
+                if (isNew)
+                {
+                    _config.SaveData.Add(saveData);
+                }
+                _config.Changed();
+            });
             _floatingScreen.ScreenPosition = _imageEditorManager.Position;
             _floatingScreen.ScreenRotation = _imageEditorManager.Rotation;
             _floatingScreen.handle.gameObject.transform.localPosition = Vector3.zero;
             _floatingScreen.handle.gameObject.transform.position = saveData.Position;
             tForm.transform.SetParent(_floatingScreen.transform, true);
             _editorFieldView.SetText(_imageEditorManager.Name);
+            Enabled = Enabled;
             XScale = XScale;
             YScale = YScale;
         }
-
-        private void SavedData(IFSaveData saveData)
-        {
-            var val = _presentationHost.Export();
-        }
-
         private void NameFieldUpdated(InputFieldView field)
         {
             _imageEditorManager.Name = field.text;

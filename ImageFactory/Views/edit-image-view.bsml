@@ -4,6 +4,7 @@
       <horizontal id="input-root" horizontal-fit="PreferredSize" vertical-fit="PreferredSize" child-align="MiddleCenter" />
     </horizontal>
     <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="90">
+      <bool-setting text="Enabled" value="enabled" apply-on-change="true" bind-value="true" />
       <increment-setting text="Scale X" increment="0.1" value="scale-x" apply-on-change="true" bind-value="true" />
       <increment-setting text="Scale Y" increment="0.1" value="scale-y" apply-on-change="true" bind-value="true" />
     </vertical>
