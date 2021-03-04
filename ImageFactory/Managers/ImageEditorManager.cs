@@ -18,7 +18,7 @@ namespace ImageFactory.Managers
             _spritePool = spritePool;
         }
 
-        public void Present(IFImage image, IFSaveData saveData, Action<IFSaveData> saved)
+        public Transform Present(IFImage image, IFSaveData saveData, Action<IFSaveData> saved)
         {
             if (_activeSprite != null)
             {
@@ -38,15 +38,22 @@ namespace ImageFactory.Managers
             _saveAction = delegate () { saved?.Invoke(_lastClone!); };
             _activeSprite = _spritePool.Spawn();
             _activeSprite.Image = image;
+            _activeSprite.Position = _lastClone.Position;
+            _activeSprite.Rotation = _lastClone.Rotation;
+            _activeSprite.Size = _lastClone.Size;
+            return _activeSprite.transform;
         }
 
-        public void SaveAndDmismiss()
+        public void SaveAndDismiss()
         {
             if (_lastClone != null && _lastImage != null)
                 _lastClone.LocalFilePath = _lastImage.metadata.file.Name;
             _saveAction?.Invoke();
             if (_activeSprite != null)
+            {
+                _activeSprite.transform.SetParent(null);
                 _spritePool.Despawn(_activeSprite);
+            }
             _activeSprite = null!;
         }
 

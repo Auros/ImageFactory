@@ -9,13 +9,15 @@ namespace ImageFactory.UI
     {
         private IFInfoView _infoView = null!;
         private IFNewImageView _newImageView = null!;
+        private IFEditImageView _editImageView = null!;
         private MainFlowCoordinator _mainFlowCoordinator = null!;
 
         [Inject]
-        public void Inject(IFInfoView infoView, IFNewImageView newImageView, MainFlowCoordinator mainFlowCoordinator)
+        public void Inject(IFInfoView infoView, IFNewImageView newImageView, IFEditImageView editImageView, MainFlowCoordinator mainFlowCoordinator)
         {
             _infoView = infoView;
             _newImageView = newImageView;
+            _editImageView = editImageView;
             _mainFlowCoordinator = mainFlowCoordinator;
         }
 
@@ -32,21 +34,44 @@ namespace ImageFactory.UI
                 ProvideInitialViewControllers(_infoView, _newImageView);
             }
             _newImageView.NewImageRequested += NewImageView_NewImageRequested;
+            _editImageView.Cancelled += DismissEditView;
+            _editImageView.Saved += DismissEditView;
+        }
+
+        private void DismissEditView()
+        {
+            if (_editImageView.isInViewControllerHierarchy)
+            {
+                ReplaceTopViewController(_infoView, animationType: ViewController.AnimationType.Out);
+                SetLeftScreenViewController(_newImageView, ViewController.AnimationType.Out);
+            }
         }
 
         private void NewImageView_NewImageRequested(IFImage image)
         {
-
+            SetLeftScreenViewController(null, ViewController.AnimationType.Out);
+            SetRightScreenViewController(null, ViewController.AnimationType.Out);
+            ReplaceTopViewController(_editImageView);
+            _editImageView.EnableEditing(image);
         }
 
         protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
         {
+            _editImageView.Saved -= DismissEditView;
+            _editImageView.Cancelled -= DismissEditView;
             _newImageView.NewImageRequested -= NewImageView_NewImageRequested;
             base.DidDeactivate(removedFromHierarchy, screenSystemDisabling);
         }
 
         protected override void BackButtonWasPressed(ViewController topViewController)
         {
+            // To prevent confusion, if they are currently editing
+            // an image, send them back (from where) to our main menu.
+            if (_editImageView.isInViewControllerHierarchy)
+            {
+                DismissEditView();
+                return;
+            }
             _mainFlowCoordinator.DismissFlowCoordinator(this); // BSML Extension
         }
     }

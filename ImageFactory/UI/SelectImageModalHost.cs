@@ -72,6 +72,7 @@ namespace ImageFactory.UI
             parserParams.EmitEvent("show-modal");
         }
 
+        [UIAction("create-clicked")]
         protected void Create()
         {
             _callback?.Invoke();

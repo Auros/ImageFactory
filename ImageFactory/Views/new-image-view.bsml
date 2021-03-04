@@ -44,7 +44,7 @@
         </horizontal>
         <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="60" pref-height="10">
           <button text="Cancel" pref-width="25" pref-height="8" event-click="hide-modal" />
-          <button text="Create" pref-width="25" pref-height="8" />
+          <button text="Create" pref-width="25" pref-height="8" on-click="create-clicked" />
         </horizontal>
       </vertical>
     </modal>

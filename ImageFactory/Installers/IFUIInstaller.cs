@@ -16,6 +16,7 @@ namespace ImageFactory.Installers
 
             Container.Bind<IFInfoView>().FromNewComponentAsViewController().AsSingle();
             Container.Bind<IFNewImageView>().FromNewComponentAsViewController().AsSingle();
+            Container.Bind<IFEditImageView>().FromNewComponentAsViewController().AsSingle();
             Container.Bind<ImageFactoryFlowCoordinator>().FromNewComponentOnNewGameObject(nameof(ImageFactoryFlowCoordinator)).AsSingle();
         }
     }

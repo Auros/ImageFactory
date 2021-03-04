@@ -12,16 +12,48 @@ namespace ImageFactory.Components
         [SerializeField] private SpriteRenderer _spriteRenderer = null!;
         private RendererAnimationStateUpdater? _animator = null!;
 
+        // If we're updating the size of an animated image, we need to recalculate its position extents to remain centered.
         public Vector2 Size
         {
             get => new Vector2(transform.localScale.x, transform.localScale.y);
-            set => transform.localScale = new Vector3(value.x, value.y, 1f);
+            set
+            {
+                if (value.x == 0)
+                    value = new Vector2(0.01f, value.y);
+                if (value.y == 0)
+                    value = new Vector2(value.x, 0.01f);
+
+                var position = Position;
+                transform.localScale = new Vector3(value.x, value.y, 1f);
+                if (_image != null && _image.animationData != null)
+                {
+                    Position = position;
+                }
+            }
         }
 
+        // We are offsetting the position of the actual position with the sprite extents to make "0,0" in the center, not the corner. when working with animated images.
         public Vector3 Position
         {
-            get => transform.position + new Vector3(_spriteRenderer.bounds.extents.x, _spriteRenderer.bounds.extents.y, 0);
-            set => transform.position = value - new Vector3(_spriteRenderer.bounds.extents.x, _spriteRenderer.bounds.extents.y, 0);
+            get
+            {
+                if (_image != null && _image.animationData != null)
+                {
+                    var pos = transform.position + new Vector3(_spriteRenderer.bounds.extents.x, _spriteRenderer.bounds.extents.y, 0);
+                    return pos;
+                }
+                else return transform.position;
+            }
+            set
+            {
+                if (_image != null && _image.animationData != null)
+                {
+                    var pos = value - new Vector3(_spriteRenderer.bounds.extents.x, _spriteRenderer.bounds.extents.y, 0);
+                    transform.position = pos;
+                }
+                else
+                    transform.position = value;
+            }
         }
 
         public Quaternion Rotation
