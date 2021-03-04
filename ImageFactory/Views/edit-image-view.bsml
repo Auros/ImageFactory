@@ -7,6 +7,22 @@
       <increment-setting text="Scale X" increment="0.1" value="scale-x" apply-on-change="true" bind-value="true" />
       <increment-setting text="Scale Y" increment="0.1" value="scale-y" apply-on-change="true" bind-value="true" />
     </vertical>
+    <macro.as-host host="presentation-host">
+      <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="90" pref-height="34" bg="round-rect-panel" pad="2">
+        <dropdown-list-setting text="Presentation Options" options="presentation-options" on-change="changed" formatter="format" />
+        <vertical pref-width="90" pref-height="5" />
+        <custom-list id="presentation-list" cell-size="8" visible-cells="2" pref-height="28">
+          <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="85" pref-height="9">
+            <macro.if value="is-list">
+              <list-setting text="~name" value="selected-value" formatter="formatter" options="options" apply-on-change="true" bind-value="true" />
+            </macro.if>
+            <macro.if value="is-duration">
+              <increment-setting text="Duration" min="0.25" increment="0.25" value="duration" formatter="dur-format" apply-on-change="true" bind-value="true" />
+            </macro.if>
+          </horizontal>
+        </custom-list>
+      </vertical>
+    </macro.as-host>
     <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" spacing="3">
       <button text="Cancel" on-click="cancel-clicked" pref-width="40" />
       <button text="Save" on-click="save-clicked" pref-width="40" />

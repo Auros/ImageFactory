@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace ImageFactory.Managers
 {
+    // This is probably some of the shadiest code I've written in a while ngl (PART 1)
     internal class PresentationStore
     {
         private readonly IEnumerable<float> _oneToOneHundred;
@@ -12,19 +13,22 @@ namespace ImageFactory.Managers
 
         public PresentationStore()
         {
-            _oneToOneHundred = Enumerable.Range(5, 100).Cast<float>().Select(f => f * 0.01f);
+            _oneToOneHundred = Enumerable.Range(5, 95).Select(f => decimal.ToSingle((decimal)Math.Round(f * 0.01d, 1)));
+            var xcast = Enumerable.Range(1, 95).Select(i => (object)(i * 10)).ToList();
+            var casted = _oneToOneHundred.Cast<object>().ToList();
+
             _presentationValues = new List<Value>
             {
                 new Value("Everywhere"),
                 new Value("In Menu"),
-                new Value("Results", new ValueConstructor<object>("Finished", "Finished", "Passed", "Failed")),
+                new Value("Results Screen", false, new ValueConstructor("When", "Finished", new List<object> { "Finished", "Passed", "Failed" })),
                 new Value("In Song"),
-                new Value("%", new ValueConstructor<object>("Before", "Before", "After"), new ValueConstructor<object>("", 0.8f, _oneToOneHundred)),
-                new Value("% Range", new ValueConstructor<object>("When Above", 0.8f, _oneToOneHundred), new ValueConstructor<object>("and Below", 0.9f, _oneToOneHundred)),
-                new Value("Combo", new ValueConstructor<object>("", 100, Enumerable.Range(1, 100).Select(i => i * 10))),
-                new Value("Combo Increment", new ValueConstructor<object>("On Every X Combo", 100, Enumerable.Range(1, 100).Select(i => i * 10))),
-                new Value("Combo Drop"),
-                new Value("On Last Note")
+                new Value("%", false, new ValueConstructor("When", "Below", new List<object> { "Below", "Above" }), new ValueConstructor("%", 0.8f, casted)),
+                new Value("% Range", false, new ValueConstructor("When Above (%)", 0.8f, casted), new ValueConstructor("and Below (%)", 0.9f, casted)),
+                new Value("Combo", true, new ValueConstructor("On Combo", 100, xcast)),
+                new Value("Combo Increment", true, new ValueConstructor("On Every X Combo", 100, xcast)),
+                new Value("Combo Drop", true),
+                new Value("On Last Note", true)
             };
         }
 
@@ -36,23 +40,27 @@ namespace ImageFactory.Managers
         public class Value
         {
             public string ID { get; }
-            public IEnumerable<ValueConstructor<object>> Constructors { get; }
+            public bool HasDuration { get; }
+            public IEnumerable<ValueConstructor> Constructors { get; }
 
-            public Value(string id)
+            public Value(string id, bool hasDuration = false)
             {
                 ID = id;
-                Constructors = Array.Empty<ValueConstructor<object>>();
+                HasDuration = hasDuration;
+                Constructors = Array.Empty<ValueConstructor>();
             }
 
-            public Value(string id, ValueConstructor<object> constructor)
+            public Value(string id, bool hasDuration, ValueConstructor constructor)
             {
                 ID = id;
-                Constructors = new ValueConstructor<object>[] { constructor };
+                HasDuration = hasDuration;
+                Constructors = new ValueConstructor[] { constructor };
             }
 
-            public Value(string id, params ValueConstructor<object>[] constructors)
+            public Value(string id, bool hasDuration, params ValueConstructor[] constructors)
             {
                 ID = id;
+                HasDuration = hasDuration;
                 Constructors = constructors;
             }
         }

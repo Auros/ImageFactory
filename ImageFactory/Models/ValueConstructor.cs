@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ImageFactory.Models
 {
-    internal class ValueConstructor<T>
+    internal class ValueConstructor
     {
-        public T[] Values { get; }
         public string Name { get; }
-        public T DefaultValue { get; }
+        public object DefaultValue { get; }
+        public List<object> Values { get; }
 
-        public ValueConstructor(string name, T defaultValue, params T[] values)
+        public ValueConstructor(string name, object defaultValue, List<object> values)
         {
             Name = name;
             Values = values;

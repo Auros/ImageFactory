@@ -26,7 +26,6 @@ namespace ImageFactory.UI
         private FloatingScreen _floatingScreen = null!; 
         private InputFieldView _editorFieldView = null!;
         private InputFieldView _templateFieldView = null!;
-        private PresentationStore _presentationStore = null!;
         private ImageEditorManager _imageEditorManager = null!;
 
         [UIAction("cancel-clicked")]
@@ -37,6 +36,9 @@ namespace ImageFactory.UI
 
         [UIComponent("input-root")]
         protected readonly RectTransform _inputRoot = null!;
+
+        [UIValue("presentation-host")]
+        protected PresentationHost _presentationHost = null!;
 
         [UIValue("scale-x")]
         protected float XScale
@@ -53,11 +55,11 @@ namespace ImageFactory.UI
         }
 
         [Inject]
-        public void Construct(DiContainer container, PresentationStore presentationStore, ImageEditorManager imageEditorManager, PhysicsRaycasterWithCache cacheRaycaster, LevelSearchViewController levelSearchViewController)
+        public void Construct(DiContainer container, ImageEditorManager imageEditorManager, PhysicsRaycasterWithCache cacheRaycaster, LevelSearchViewController levelSearchViewController)
         {
             _container = container;
-            _presentationStore = presentationStore;
             _imageEditorManager = imageEditorManager;
+            _presentationHost = container.Instantiate<PresentationHost>();
             _templateFieldView = levelSearchViewController.GetField<InputFieldView, LevelSearchViewController>("_searchTextInputFieldView");
             _floatingScreen = FloatingScreen.CreateFloatingScreen(new Vector2(10, 10f), true, Vector3.zero, Quaternion.identity, 0f, false);
             _floatingScreen.GetComponent<VRGraphicRaycaster>().SetField("_physicsRaycaster", cacheRaycaster);
@@ -92,12 +94,11 @@ namespace ImageFactory.UI
             _editorFieldView.SetText(_imageEditorManager.Name);
             XScale = XScale;
             YScale = YScale;
-
         }
 
         private void SavedData(IFSaveData saveData)
         {
-
+            var val = _presentationHost.Export();
         }
 
         private void NameFieldUpdated(InputFieldView field)
