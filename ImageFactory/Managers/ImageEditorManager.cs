@@ -8,7 +8,6 @@ namespace ImageFactory.Managers
     internal class ImageEditorManager
     {
         private Action? _saveAction;
-        private IFImage? _lastImage;
         private IFSaveData? _lastClone;
         private IFSprite _activeSprite = null!;
         private readonly IFSprite.Pool _spritePool;
@@ -24,7 +23,6 @@ namespace ImageFactory.Managers
             {
                 _spritePool.Despawn(_activeSprite);
             }
-            _lastImage = image;
             _lastClone = new IFSaveData
             {
                 Name = saveData.Name,

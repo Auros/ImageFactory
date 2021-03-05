@@ -13,14 +13,12 @@ namespace ImageFactory.Managers
     {
         private readonly SiraLog _siraLog;
         private readonly List<IFImage> _loadedImages;
-        private readonly Queue<IFImage.Metadata> _concurrentLoader;
         private readonly IImageFactorySpriteLoader _imageFactorySpriteLoader;
 
-        public ImageManager(SiraLog siraLog, MetadataStore metadataStore, IImageFactorySpriteLoader imageFactorySpriteLoader)
+        public ImageManager(SiraLog siraLog, IImageFactorySpriteLoader imageFactorySpriteLoader)
         {
             _siraLog = siraLog;
             _loadedImages = new List<IFImage>();
-            _concurrentLoader = new Queue<IFImage.Metadata>();
             _imageFactorySpriteLoader = imageFactorySpriteLoader;
         }
 

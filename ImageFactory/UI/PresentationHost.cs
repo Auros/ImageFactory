@@ -8,7 +8,6 @@ using SiraUtil.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace ImageFactory.UI
@@ -20,13 +19,12 @@ namespace ImageFactory.UI
         private PresentationStore.Value _activeValue;
 
         [UIValue("active-presentation")]
-        private PresentationStore.Value Value
+        protected internal PresentationStore.Value Value
         {
             get => _activeValue;
             set
             {
                 _activeValue = value;
-                _siraLog.Warning(_activeValue.ID);
                 Changed(_activeValue);
             }
         }
@@ -44,17 +42,15 @@ namespace ImageFactory.UI
         protected readonly CustomCellListTableData _presentationList = null!;
 
         private string _lastID = "";
-        private readonly SiraLog _siraLog;
         private readonly PresentationStore _store;
 
         private bool _justSet = false;
         private ImagePresentationData? _presentation;
         public ImagePresentationData? LastData { get => _presentation; set { _justSet = true; _presentation = value; } }
 
-        public PresentationHost(SiraLog siraLog, PresentationStore store)
+        public PresentationHost(PresentationStore store)
         {
             _store = store;
-            _siraLog = siraLog;
             var values = store.Values();
             _activeValue = values.First();
             _presentationOptions = values.Cast<object>().ToList();
@@ -120,7 +116,6 @@ namespace ImageFactory.UI
                                 object reconstructedValue = saveVal;
                                 var con = presVal.Constructors.ElementAt(i);
 
-                                _siraLog.Info(saveVal);
                                 if (float.TryParse(saveVal, out float reFloat))
                                     reconstructedValue = reFloat;
                                 if (int.TryParse(saveVal, out int reInt))
@@ -156,13 +151,8 @@ namespace ImageFactory.UI
             _lastID = _activeValue!.ID;
 
             _dropdown.values = _presentationOptions;
-
-            _dropdown.Value = _activeValue;
             _parserParams.EmitEvent("get");
-            _dropdown.Value = _activeValue;
             _dropdown.UpdateChoices();
-            _dropdown.Value = _activeValue;
-            _siraLog.Error(_activeValue.ID);
             _justSet = false;
         }
 
