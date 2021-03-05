@@ -10,7 +10,7 @@
     </vertical>
     <macro.as-host host="presentation-host">
       <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="90" pref-height="34" bg="round-rect-panel" pad="2">
-        <dropdown-list-setting text="Presentation Options" options="presentation-options" on-change="changed" formatter="format" />
+        <dropdown-list-setting id="dropdown" text="Presentation Options" options="presentation-options" value="active-presentation" formatter="format" get-event="get" apply-on-change="true" bind-value="true" />
         <vertical pref-width="90" pref-height="5" />
         <custom-list id="presentation-list" cell-size="8" visible-cells="2" pref-height="28">
           <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="85" pref-height="9">

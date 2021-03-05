@@ -30,10 +30,19 @@ namespace ImageFactory.UI
         private ImageEditorManager _imageEditorManager = null!;
 
         [UIAction("cancel-clicked")]
-        protected void CancelClicked() => Cancelled?.Invoke();
+        protected void CancelClicked()
+        {
+            _presentationHost.Reset();
+            Cancelled?.Invoke();
+        }
 
         [UIAction("save-clicked")]
-        protected void SaveClicked() => Saved?.Invoke();
+        protected void SaveClicked()
+        {
+            _imageEditorManager.Dismiss(true);
+            _presentationHost.Reset();
+            Saved?.Invoke();
+        }
 
         [UIComponent("input-root")]
         protected readonly RectTransform _inputRoot = null!;
@@ -85,13 +94,15 @@ namespace ImageFactory.UI
 
         public void EnableEditing(IFImage image, IFSaveData? data = null)
         {
+            _presentationHost.Reset();
+            _presentationHost.LastData = data?.Presentation;
+            var saveData = data ?? new IFSaveData { Enabled = true, Position = new Vector3(0f, 2f, 2f), Name = image.metadata.file.Name, LocalFilePath = image.metadata.file.Name };
+            bool isNew = data == null;
+
             // Uses our dummy view controller to use the BSML handle because I am lazy
             // Then, resize the handle accordingly, setup our editor sprite instance,
             // set the position of our handle TO the image and THEN make the sprite a
             // child of the handle screen.
-            var saveData = data ?? new IFSaveData { Enabled = true, Position = new Vector3(0f, 2f, 2f), Name = image.metadata.file.Name, LocalFilePath = image.metadata.file.Name };
-            bool isNew = data == null;
-
             _floatingScreen.gameObject.SetActive(true);
             _floatingScreen.SetRootViewController(_dummyView, AnimationType.None);
             _floatingScreen.handle.transform.localScale = Vector3.one / 5f;
@@ -110,9 +121,7 @@ namespace ImageFactory.UI
                 saveData.Presentation.Value = val.Item2;
 
                 if (isNew)
-                {
                     _config.SaveData.Add(saveData);
-                }
                 _config.Changed();
             });
             _floatingScreen.ScreenPosition = _imageEditorManager.Position;
@@ -124,6 +133,8 @@ namespace ImageFactory.UI
             Enabled = Enabled;
             XScale = XScale;
             YScale = YScale;
+
+            _presentationHost.Update();
         }
         private void NameFieldUpdated(InputFieldView field)
         {
@@ -138,7 +149,8 @@ namespace ImageFactory.UI
 
         protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
         {
-            _imageEditorManager.SaveAndDismiss();
+            _presentationHost.Reset();
+            _imageEditorManager.Dismiss(false);
             _floatingScreen.SetRootViewController(null, AnimationType.None);
             base.DidDeactivate(removedFromHierarchy, screenSystemDisabling);
             _editorFieldView.onValueChanged.RemoveListener(NameFieldUpdated);

@@ -6,6 +6,7 @@ using HMUI;
 using ImageFactory.Managers;
 using ImageFactory.Models;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Tweening;
 using UnityEngine;
@@ -14,11 +15,11 @@ using Zenject;
 
 namespace ImageFactory.UI
 {
-    [HotReload(RelativePathToLayout = @"..\Views\new-image-view.bsml")]
-    [ViewDefinition("ImageFactory.Views.new-image-view.bsml")]
-    internal class IFNewImageView : BSMLAutomaticViewController
+    [HotReload(RelativePathToLayout = @"..\Views\saved-image-view.bsml")]
+    [ViewDefinition("ImageFactory.Views.saved-image-view.bsml")]
+    internal class IFSavedImageView : BSMLAutomaticViewController
     {
-        public event Action<IFImage>? NewImageRequested;
+        public event Action<IFImage, IFSaveData>? EditImageRequested;
 
         #region Injected Dependencies
 
@@ -28,13 +29,15 @@ namespace ImageFactory.UI
 
         protected ImageManager _imageManager = null!;
 
+        protected Config _config = null!;
+
         [Inject]
-        protected void Construct(DiContainer container, ImageManager imageManager, MetadataStore metadataStore, TweeningManager tweeningManager)
+        protected void Construct(Config config, DiContainer container, ImageManager imageManager, MetadataStore metadataStore, TweeningManager tweeningManager)
         {
-            _selectImageModalHost = container.Instantiate<SelectImageModalHost>();
             _tweeningManager = tweeningManager;
             _metadataStore = metadataStore;
             _imageManager = imageManager;
+            _config = config;
         }
 
         #endregion
@@ -77,9 +80,6 @@ namespace ImageFactory.UI
 
         #region Image Loader
 
-        [UIValue("select-image-modal-host")]
-        protected SelectImageModalHost _selectImageModalHost = null!;
-
         [UIComponent("image-list")]
         protected readonly CustomCellListTableData _imageList = null!;
         private bool _didLoad = false;
@@ -89,7 +89,7 @@ namespace ImageFactory.UI
 
         [UIComponent("down-button")]
         protected readonly Button _downButton = null!;
-        
+
         public async Task LoadImages()
         {
             if (_didLoad)
@@ -102,19 +102,18 @@ namespace ImageFactory.UI
             await AnimateToSelectionCanvas();
             _didLoad = true;
 
-            foreach (var image in loadedImages)
-                _imageList.data.Add(new NewImageCell(image, ClickedImageCell));
+            foreach (var save in _config.SaveData)
+            {
+                var image = loadedImages.FirstOrDefault(i => i.metadata.file.Name == save.LocalFilePath);
+                if (image != null)
+                    _imageList.data.Add(new EditImageCell(image, save, ClickedImageEdit));
+            }
             _imageList.tableView.ReloadData();
         }
 
-        private void ClickedImageCell(IFImage image)
+        private void ClickedImageEdit(IFImage image, IFSaveData saveData)
         {
-            _selectImageModalHost.Present(image, ClickedImageCreate);
-        }
-
-        private void ClickedImageCreate(IFImage image)
-        {
-            NewImageRequested?.Invoke(image);
+            EditImageRequested?.Invoke(image, saveData);
         }
 
         #endregion
@@ -128,10 +127,11 @@ namespace ImageFactory.UI
             _ = LoadImages();
         }
 
-        private class NewImageCell
+        private class EditImageCell
         {
             public readonly IFImage image;
-            public readonly Action<IFImage> createAction;
+            public readonly IFSaveData saveData;
+            public readonly Action<IFImage, IFSaveData> editAction;
 
             [UIComponent("preview")]
             protected readonly ImageView _previewImage = null!;
@@ -139,10 +139,11 @@ namespace ImageFactory.UI
             [UIComponent("file-name")]
             protected readonly CurvedTextMeshPro _fileName = null!;
 
-            public NewImageCell(IFImage image, Action<IFImage> createClicked)
+            public EditImageCell(IFImage image, IFSaveData saveData, Action<IFImage, IFSaveData> editClicked)
             {
                 this.image = image;
-                createAction = createClicked;
+                this.saveData = saveData;
+                editAction = editClicked;
             }
 
             [UIAction("#post-parse")]
@@ -159,13 +160,13 @@ namespace ImageFactory.UI
                 {
                     _previewImage.material = Utilities.UINoGlowRoundEdge;
                 }
-                _fileName.text = image.metadata.file.Name;
+                _fileName.text = saveData.Name;
             }
 
-            [UIAction("clicked-create-button")]
-            protected void ClickedCreateButton()
+            [UIAction("clicked-edit-button")]
+            protected void ClickedEditButton()
             {
-                createAction?.Invoke(image);
+                editAction?.Invoke(image, saveData);
             }
         }
     }

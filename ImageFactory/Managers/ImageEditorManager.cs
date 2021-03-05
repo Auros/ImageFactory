@@ -44,14 +44,17 @@ namespace ImageFactory.Managers
             return _activeSprite.transform;
         }
 
-        public void SaveAndDismiss()
+        public void Dismiss(bool save = true)
         {
             if (_lastClone != null)
             {
                 Position = Position;
                 Rotation = Rotation;
             }
-            _saveAction?.Invoke();
+            if (save)
+            {
+                _saveAction?.Invoke();
+            }
             if (_activeSprite != null)
             {
                 _activeSprite.transform.SetParent(null);

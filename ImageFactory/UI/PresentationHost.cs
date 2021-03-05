@@ -1,28 +1,169 @@
 ﻿using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
+using BeatSaberMarkupLanguage.Components.Settings;
+using BeatSaberMarkupLanguage.Parser;
 using ImageFactory.Managers;
 using ImageFactory.Models;
+using SiraUtil.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace ImageFactory.UI
 {
     // This is probably some of the shadiest code I've written in a while ngl (PART 2)
+    // Use any other part of this mod as an example but this
     internal class PresentationHost
     {
+        private PresentationStore.Value _activeValue;
+
+        [UIValue("active-presentation")]
+        private PresentationStore.Value Value
+        {
+            get => _activeValue;
+            set
+            {
+                _activeValue = value;
+                _siraLog.Warning(_activeValue.ID);
+                Changed(_activeValue);
+            }
+        }
+        
         [UIValue("presentation-options")]
-        protected readonly List<object> _presentationOptions;
+        protected List<object> _presentationOptions;
+
+        [UIComponent("dropdown")]
+        protected readonly DropDownListSetting _dropdown = null!;
+
+        [UIParams]
+        protected readonly BSMLParserParams _parserParams = null!;
 
         [UIComponent("presentation-list")]
         protected readonly CustomCellListTableData _presentationList = null!;
 
         private string _lastID = "";
+        private readonly SiraLog _siraLog;
+        private readonly PresentationStore _store;
 
-        public PresentationHost(PresentationStore store)
+        private bool _justSet = false;
+        private ImagePresentationData? _presentation;
+        public ImagePresentationData? LastData { get => _presentation; set { _justSet = true; _presentation = value; } }
+
+        public PresentationHost(SiraLog siraLog, PresentationStore store)
         {
-            _presentationOptions = store.Values().Cast<object>().ToList();
+            _store = store;
+            _siraLog = siraLog;
+            var values = store.Values();
+            _activeValue = values.First();
+            _presentationOptions = values.Cast<object>().ToList();
+        }
+
+        [UIAction("format")]
+        protected string FormatOptions(PresentationStore.Value value)
+        {
+            return value.ID;
+        }
+
+        public void Update()
+        {
+            if (LastData != null)
+            {
+                var val = _presentationOptions.Cast<PresentationStore.Value>().FirstOrDefault(p => p.ID == LastData.PresentationID);
+                if (val != null) Value = val;
+            }
+        }
+
+        public void Reset()
+        {
+            LastData = null;
+            _lastID = "";
+        }
+
+        // WHAT IS WRONG WITH ME???
+        protected void Changed(PresentationStore.Value value)
+        {
+            if (_lastID == value.ID)
+                return;
+
+            _activeValue = value;
+            _presentationList.data.Clear();
+            _presentationList.tableView.ReloadData();
+
+            foreach (Transform pres in _presentationList.tableView.contentTransform)
+                UnityEngine.Object.Destroy(pres.gameObject);
+
+            _presentationOptions = _store.Values().Cast<object>().ToList();
+            if (LastData != null && (_justSet || (!_justSet && LastData.PresentationID == _activeValue.ID)) )
+            {
+                var id = LastData.PresentationID;
+                var presVal = _presentationOptions.Cast<PresentationStore.Value>().FirstOrDefault(p => p.ID == id);
+                if (presVal != null)
+                {
+                    _activeValue = presVal;
+                    var presList = _store.Values().ToArray();
+                    var index = presList.IndexOf(presVal);
+
+                    if (index >= 0)
+                    {
+                        var reconstructors = new List<ValueConstructor>();
+                        var valCount = presVal.Constructors.Count();
+                        var props = LastData.Value.Split('|');
+                        var propCount = props.Length;
+
+                        if (valCount > 0 && valCount == propCount)
+                        {
+                            for (int i = 0; i < valCount; i++)
+                            {
+                                var saveVal = props[i];
+                                object reconstructedValue = saveVal;
+                                var con = presVal.Constructors.ElementAt(i);
+
+                                _siraLog.Info(saveVal);
+                                if (float.TryParse(saveVal, out float reFloat))
+                                    reconstructedValue = reFloat;
+                                if (int.TryParse(saveVal, out int reInt))
+                                    reconstructedValue = reInt;
+                                reconstructors.Add(new ValueConstructor(con.Name, reconstructedValue, con.Values));
+                            }
+                        }
+                        var clone = new PresentationStore.Value(id, presVal.HasDuration, reconstructors.ToArray());
+                        presList[index] = clone;
+                        _dropdown.Value = clone;
+                        _activeValue = clone;
+                    }
+                    _presentationOptions = presList.Cast<object>().ToList();
+                }
+            }
+            else
+            {
+                _presentationOptions = _store.Values().Cast<object>().ToList();
+            }
+
+            foreach (Transform pres in _presentationList.tableView.contentTransform)
+                UnityEngine.Object.Destroy(pres.gameObject);
+
+            _presentationList.data.AddRange(_activeValue.Constructors.Select(c => new InternalHost(c)));
+            if (_activeValue.HasDuration)
+            {
+                var durHost = new InternalHost();
+                _presentationList.data.Add(durHost);
+                if (_activeValue != null && _activeValue.HasDuration && LastData != null && LastData.Duration != 0)
+                    durHost.Duration = LastData.Duration;
+            }
+            _presentationList.tableView.ReloadData();
+            _lastID = _activeValue!.ID;
+
+            _dropdown.values = _presentationOptions;
+
+            _dropdown.Value = _activeValue;
+            _parserParams.EmitEvent("get");
+            _dropdown.Value = _activeValue;
+            _dropdown.UpdateChoices();
+            _dropdown.Value = _activeValue;
+            _siraLog.Error(_activeValue.ID);
+            _justSet = false;
         }
 
         // LITERALLY PRETEND THIS DOES NOT EXIST
@@ -34,27 +175,6 @@ namespace ImageFactory.UI
                 : hosts.Where(h => !h.isDuration).Select(f => f.Value.ToString()).Aggregate((f, n) => f + "|" + n);
             
             return new Tuple<string, string, float?>(_lastID, agg, duration?.Duration);
-        }
-
-        [UIAction("format")]
-        protected string FormatOptions(PresentationStore.Value value)
-        {
-            return value.ID;
-        }
-
-        [UIAction("changed")]
-        protected void Changed(PresentationStore.Value value)
-        {
-            _presentationList.data.Clear();
-            _presentationList.tableView.ReloadData();
-
-            foreach (Transform pres in _presentationList.tableView.contentTransform)
-                UnityEngine.Object.Destroy(pres.gameObject);
-
-            _presentationList.data.AddRange(value.Constructors.Select(c => new InternalHost(c)));
-            if (value.HasDuration) _presentationList.data.Add(new InternalHost());
-            _presentationList.tableView.ReloadData();
-            _lastID = value.ID;
         }
 
         private class InternalHost

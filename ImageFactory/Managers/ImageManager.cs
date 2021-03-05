@@ -13,14 +13,14 @@ namespace ImageFactory.Managers
     {
         private readonly SiraLog _siraLog;
         private readonly List<IFImage> _loadedImages;
-        private readonly MetadataStore _metadataStore;
+        private readonly Queue<IFImage.Metadata> _concurrentLoader;
         private readonly IImageFactorySpriteLoader _imageFactorySpriteLoader;
 
         public ImageManager(SiraLog siraLog, MetadataStore metadataStore, IImageFactorySpriteLoader imageFactorySpriteLoader)
         {
             _siraLog = siraLog;
-            _metadataStore = metadataStore;
             _loadedImages = new List<IFImage>();
+            _concurrentLoader = new Queue<IFImage.Metadata>();
             _imageFactorySpriteLoader = imageFactorySpriteLoader;
         }
 
@@ -57,7 +57,7 @@ namespace ImageFactory.Managers
                 return cached;
 
             var image = await _imageFactorySpriteLoader.LoadAsync(metadata);
-            if (!(image is null))
+            if (!(image is null) && !_loadedImages.Any(ifi => ifi.metadata.file == metadata.file))
             {
                 _siraLog.Debug($"X: {image.width}px, Y: {image.height}px, Size: {image.metadata.size} bytes, Load Time: {image.loadTime.TotalSeconds}");
                 _loadedImages.Add(image);

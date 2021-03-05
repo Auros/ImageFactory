@@ -6,6 +6,7 @@ using System.Linq;
 namespace ImageFactory.Managers
 {
     // This is probably some of the shadiest code I've written in a while ngl (PART 1)
+    // Use any other part of this mod as an example but this
     internal class PresentationStore
     {
         private readonly IEnumerable<float> _oneToOneHundred;
@@ -13,7 +14,9 @@ namespace ImageFactory.Managers
 
         public PresentationStore()
         {
-            _oneToOneHundred = Enumerable.Range(5, 95).Select(f => decimal.ToSingle((decimal)Math.Round(f * 0.01d, 1)));
+            //_oneToOneHundred = Enumerable.Range(5, 95).Select(f => Math.Round(f * 0.01, 2)));
+            _oneToOneHundred = Enumerable.Range(5, 95).Select(f => (float)decimal.ToDouble((decimal)Math.Round(f * 0.01d, 2)));
+            //_oneToOneHundred = new float[] { 0.5f, 0.51f, 0.52f, 0.53f, 0.54f, 0.55f, 0.56f, 0.57f, 0.58f, 0.59f, 0.60f, 0.61f, 0.62f, 0.63f, 0.64f, 0.65f, 0.66f, 0.67f, 0.68f }
             var xcast = Enumerable.Range(1, 95).Select(i => (object)(i * 10)).ToList();
             var casted = _oneToOneHundred.Cast<object>().ToList();
 

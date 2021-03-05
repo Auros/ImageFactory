@@ -45,6 +45,7 @@
       <None Remove="Views\edit-image-view.bsml" />
       <None Remove="Views\info-view.bsml" />
       <None Remove="Views\new-image-view.bsml" />
+      <None Remove="Views\saved-image-view.bsml" />
     </ItemGroup>
 
     <ItemGroup>
@@ -144,6 +145,7 @@
         <EmbeddedResource Include="Views\edit-image-view.bsml" />
         <EmbeddedResource Include="Views\info-view.bsml" />
         <EmbeddedResource Include="Views\new-image-view.bsml" />
+        <EmbeddedResource Include="Views\saved-image-view.bsml" />
     </ItemGroup>
 
     <ItemGroup>	

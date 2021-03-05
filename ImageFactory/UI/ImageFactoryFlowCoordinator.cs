@@ -10,14 +10,16 @@ namespace ImageFactory.UI
         private IFInfoView _infoView = null!;
         private IFNewImageView _newImageView = null!;
         private IFEditImageView _editImageView = null!;
+        private IFSavedImageView _savedImageView = null!;
         private MainFlowCoordinator _mainFlowCoordinator = null!;
 
         [Inject]
-        public void Inject(IFInfoView infoView, IFNewImageView newImageView, IFEditImageView editImageView, MainFlowCoordinator mainFlowCoordinator)
+        public void Inject(IFInfoView infoView, IFNewImageView newImageView, IFEditImageView editImageView, IFSavedImageView savedImageView, MainFlowCoordinator mainFlowCoordinator)
         {
             _infoView = infoView;
             _newImageView = newImageView;
             _editImageView = editImageView;
+            _savedImageView = savedImageView;
             _mainFlowCoordinator = mainFlowCoordinator;
         }
 
@@ -31,8 +33,9 @@ namespace ImageFactory.UI
 
                 // Upon activating for the first time, let's provide our initial view controllers for this flow coordinator
                 // to use. The ScreenSystem needs at a main screen and will break if there is none after activating.
-                ProvideInitialViewControllers(_infoView, _newImageView);
+                ProvideInitialViewControllers(_infoView, _newImageView, _savedImageView);
             }
+            _savedImageView.EditImageRequested += SavedImageView_EditImageRequested;
             _newImageView.NewImageRequested += NewImageView_NewImageRequested;
             _editImageView.Cancelled += DismissEditView;
             _editImageView.Saved += DismissEditView;
@@ -43,6 +46,7 @@ namespace ImageFactory.UI
             if (_editImageView.isInViewControllerHierarchy)
             {
                 ReplaceTopViewController(_infoView, animationType: ViewController.AnimationType.Out);
+                SetRightScreenViewController(_savedImageView, ViewController.AnimationType.Out);
                 SetLeftScreenViewController(_newImageView, ViewController.AnimationType.Out);
             }
         }
@@ -55,11 +59,20 @@ namespace ImageFactory.UI
             _editImageView.EnableEditing(image);
         }
 
+        private void SavedImageView_EditImageRequested(IFImage image, IFSaveData saveData)
+        {
+            SetLeftScreenViewController(null, ViewController.AnimationType.Out);
+            SetRightScreenViewController(null, ViewController.AnimationType.Out);
+            ReplaceTopViewController(_editImageView);
+            _editImageView.EnableEditing(image, saveData);
+        }
+
         protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
         {
             _editImageView.Saved -= DismissEditView;
             _editImageView.Cancelled -= DismissEditView;
             _newImageView.NewImageRequested -= NewImageView_NewImageRequested;
+            _savedImageView.EditImageRequested -= SavedImageView_EditImageRequested;
             base.DidDeactivate(removedFromHierarchy, screenSystemDisabling);
         }
 
