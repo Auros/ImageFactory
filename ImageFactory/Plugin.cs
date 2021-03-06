@@ -28,11 +28,11 @@ namespace ImageFactory
                 Container.BindInstance(new UBinder<Plugin, PluginMetadata>(metadata));
             });
             
-            zenjector.OnApp<IFCoreInstaller>();
-            zenjector.OnMenu<IFMenuInstaller>();
             zenjector.OnMenu<IFUIInstaller>();
-
+            zenjector.OnApp<IFCoreInstaller>();
             zenjector.OnApp<IFImageInstaller>();
+            zenjector.OnMenu<IFMenuInstaller>();
+            zenjector.OnGame<IFGameInstaller>();
         }
 
         [OnEnable]

@@ -2,7 +2,6 @@
 using ImageFactory.Managers;
 using ImageFactory.Models;
 using IPA.Utilities;
-using SiraUtil.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,8 +52,9 @@ namespace ImageFactory.Presenters
                 IFImage.Metadata? metadata = _imageManager.GetMetadata(save);
                 if (metadata.HasValue)
                 {
-                    _imageManager.Spawn(save);
                     var image = await _imageManager.LoadImage(metadata.Value);
+                    if (image == null)
+                        continue;
                     if (!_allowedToCreate)
                         return;
                     var sprite = _imageManager.Spawn(save);
