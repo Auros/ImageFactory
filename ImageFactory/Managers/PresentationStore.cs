@@ -25,7 +25,7 @@ namespace ImageFactory.Managers
             {
                 new Value(ScenePresenter.EVERYWHERE_ID),
                 new Value(ScenePresenter.MENU_ID),
-                new Value("Results Screen", false, new ValueConstructor("When", "Finished", new List<object> { "Finished", "Passed", "Failed" })),
+                new Value(ResultsPresenter.RESULTS_ID, false, new ValueConstructor("When", "Finished", new List<object> { "Finished", "Passed", "Failed" })),
                 new Value(ScenePresenter.GAME_ID),
                 new Value("%", false, new ValueConstructor("When", "Below", new List<object> { "Below", "Above" }), new ValueConstructor("%", 0.8f, casted)),
                 new Value("% Range", false, new ValueConstructor("When Above (%)", 0.8f, casted), new ValueConstructor("and Below (%)", 0.9f, casted)),

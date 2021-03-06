@@ -16,7 +16,6 @@ namespace ImageFactory.Presenters
         private readonly Config _config;
         private readonly SiraLog _siraLog;
         private readonly ImageManager _imageManager;
-        private readonly MetadataStore _metadataStore;
 
         private readonly List<SaveSprite> _gameSprites;
         private readonly List<SaveSprite> _menuSprites;
@@ -27,12 +26,11 @@ namespace ImageFactory.Presenters
         public const string EVERYWHERE_ID = "Everywhere";
 
 
-        public ScenePresenter(SiraLog siraLog, Config config, ImageManager imageManager, MetadataStore metadataStore)
+        public ScenePresenter(SiraLog siraLog, Config config, ImageManager imageManager)
         {
             _config = config;
             _siraLog = siraLog;
             _imageManager = imageManager;
-            _metadataStore = metadataStore;
 
             _gameSprites = new List<SaveSprite>();
             _menuSprites = new List<SaveSprite>();
@@ -68,7 +66,6 @@ namespace ImageFactory.Presenters
 
         private async void SceneManager_sceneLoaded(Scene scene, LoadSceneMode __)
         {
-            _siraLog.Info(scene.name);
             if (scene.name == "MenuCore")
             {
                 _globalSprites.AddRange(await LoadSprites(EVERYWHERE_ID));
@@ -171,7 +168,7 @@ namespace ImageFactory.Presenters
             var saves = _config.SaveData.Where(sd => sd.Enabled && sd.Presentation.PresentationID == id);
             foreach (var save in saves)
             {
-                IFImage.Metadata? metadata = _metadataStore.AllMetadata().FirstOrDefault(m => m.file.Name == save.LocalFilePath);
+                IFImage.Metadata? metadata = _imageManager.GetMetadata(save);
                 if (metadata.HasValue)
                 {
                     var image = await _imageManager.LoadImage(metadata.Value);

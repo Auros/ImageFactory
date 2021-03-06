@@ -13,15 +13,17 @@ namespace ImageFactory.Managers
     {
         private readonly SiraLog _siraLog;
         private readonly List<IFImage> _loadedImages;
+        private readonly MetadataStore _metadataStore;
         private readonly MonoMemoryPoolContainer<IFSprite> _spritePool;
         private readonly IImageFactorySpriteLoader _imageFactorySpriteLoader;
         private readonly List<IFSprite> _recentlyDeanimated = new List<IFSprite>();
 
         public event EventHandler<ImageUpdateArgs>? ImageUpdated;
 
-        public ImageManager(SiraLog siraLog, IFSprite.Pool spritePool, IImageFactorySpriteLoader imageFactorySpriteLoader)
+        public ImageManager(SiraLog siraLog, MetadataStore metadataStore, IFSprite.Pool spritePool, IImageFactorySpriteLoader imageFactorySpriteLoader)
         {
             _siraLog = siraLog;
+            _metadataStore = metadataStore;
             _loadedImages = new List<IFImage>();
             _imageFactorySpriteLoader = imageFactorySpriteLoader;
             _spritePool = new MonoMemoryPoolContainer<IFSprite>(spritePool);
@@ -38,12 +40,19 @@ namespace ImageFactory.Managers
 
         public void Despawn(IFSprite sprite)
         {
+            sprite.Image = null;
+            sprite.gameObject.SetActive(false);
             _spritePool.Despawn(sprite);
         }
 
         public IEnumerable<IFImage> LoadedImages()
         {
             return _loadedImages;
+        }
+
+        public IFImage.Metadata? GetMetadata(IFSaveData saveData)
+        {
+            return _metadataStore.AllMetadata().FirstOrDefault(m => m.file.Name == saveData.LocalFilePath);
         }
 
         public async Task<IFImage?> LoadImage(IFImage.Metadata metadata)

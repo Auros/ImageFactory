@@ -29,6 +29,7 @@ namespace ImageFactory
             });
             
             zenjector.OnApp<IFCoreInstaller>();
+            zenjector.OnMenu<IFMenuInstaller>();
             zenjector.OnMenu<IFUIInstaller>();
 
             zenjector.OnApp<IFImageInstaller>();
