@@ -116,6 +116,16 @@ namespace ImageFactory.Components
             _spriteRenderer.material.shader = _shader;
         }
 
+        public void AnimateIn()
+        {
+            _spriteRenderer.enabled = true;
+        }
+
+        public void AnimateOut()
+        {
+            _spriteRenderer.enabled = false;
+        }
+
         public class Pool : MonoMemoryPool<IFSprite> { /*Initialize Pool Type*/ }
     }
 }

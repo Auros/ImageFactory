@@ -9,12 +9,13 @@
           <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="9" pref-height="9">
             <image id="preview" preserve-aspect="true" />
           </vertical>
-          <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="59" pref-height="9">
-            <text id="file-name" align="Left" />
+          <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="48" pref-height="9">
+            <text id="save-name" align="Left" />
           </vertical>
-          <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="10" pref-height="9">
+          <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="21" pref-height="9">
+            <button text="❌" pref-width="9" pref-height="9" on-click="clicked-delete-button" face-color="red" />
             <button text="↩" pref-width="9" pref-height="9" on-click="clicked-edit-button" />
-          </vertical>
+          </horizontal>
         </horizontal>
       </custom-list>
       <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="10" pref-height="100">
@@ -25,6 +26,6 @@
   </vertical>
   <vertical id="loading-root" active="true" horizontal-fit="PreferredSize" vertical-fit="PreferredSize">
     <loading pref-width="30" pref-height="30" />
-    <text text="Loading Images..." align="Center" font-size="5" />
+    <text text="Loading Saves..." align="Center" font-size="5" />
   </vertical>
 </bg>

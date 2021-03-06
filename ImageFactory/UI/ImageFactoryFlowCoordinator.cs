@@ -39,6 +39,7 @@ namespace ImageFactory.UI
             _newImageView.NewImageRequested += NewImageView_NewImageRequested;
             _editImageView.Cancelled += DismissEditView;
             _editImageView.Saved += DismissEditView;
+            _savedImageView.ShouldRefresh = true;
         }
 
         private void DismissEditView()
@@ -86,6 +87,7 @@ namespace ImageFactory.UI
                 return;
             }
             _mainFlowCoordinator.DismissFlowCoordinator(this); // BSML Extension
+            _savedImageView.ShouldRefresh = false;
         }
     }
 }

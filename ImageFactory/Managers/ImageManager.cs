@@ -1,46 +1,30 @@
-﻿using ImageFactory.Interfaces;
+﻿using ImageFactory.Components;
+using ImageFactory.Interfaces;
 using ImageFactory.Models;
 using SiraUtil.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Zenject;
 
 namespace ImageFactory.Managers
 {
-    internal class ImageManager : IInitializable, IDisposable
+    internal class ImageManager : IDisposable
     {
         private readonly SiraLog _siraLog;
         private readonly List<IFImage> _loadedImages;
+        private readonly MonoMemoryPoolContainer<IFSprite> _spritePool;
         private readonly IImageFactorySpriteLoader _imageFactorySpriteLoader;
+        private readonly List<IFSprite> _recentlyDeanimated = new List<IFSprite>();
 
-        public ImageManager(SiraLog siraLog, IImageFactorySpriteLoader imageFactorySpriteLoader)
+        public event EventHandler<ImageUpdateArgs>? ImageUpdated;
+
+        public ImageManager(SiraLog siraLog, IFSprite.Pool spritePool, IImageFactorySpriteLoader imageFactorySpriteLoader)
         {
             _siraLog = siraLog;
             _loadedImages = new List<IFImage>();
             _imageFactorySpriteLoader = imageFactorySpriteLoader;
-        }
-
-        public void Initialize()
-        {
-            _ = InitializeAsync();
-        }
-
-        private async Task InitializeAsync()
-        {
-            await SiraUtil.Utilities.PauseChamp;
-            /*
-            _siraLog.Debug("Initializing...");
-            Stopwatch watch = Stopwatch.StartNew();
-            int count = 0;
-            foreach (var metadata in _metadataStore.AllMetadata())
-            {
-                await LoadImage(metadata);
-            }
-            watch.Stop();
-            _siraLog.Debug($"Took {watch.Elapsed.TotalSeconds} seconds (asynchronous non-blocking) to initialize the Image Factory with {count} active images.");
-            */        
+            _spritePool = new MonoMemoryPoolContainer<IFSprite>(spritePool);
         }
 
         public IEnumerable<IFImage> LoadedImages()
@@ -61,6 +45,26 @@ namespace ImageFactory.Managers
                 _loadedImages.Add(image);
             }
             return image;
+        }
+
+        public void UpdateImage(IFImage image, IFSaveData saveData, ImageUpdateArgs.Action action = ImageUpdateArgs.Action.Updated)
+        {
+            ImageUpdated?.Invoke(this, new ImageUpdateArgs(action, image, saveData));
+        }
+
+        public void ReanimateAll()
+        {
+            foreach (var sprite in _recentlyDeanimated)
+                sprite.AnimateIn();
+            _recentlyDeanimated.Clear();
+        }
+
+        public void DeanimateAll()
+        {
+            _recentlyDeanimated.Clear();
+            _recentlyDeanimated.AddRange(_spritePool.activeItems);
+            foreach (var sprite in _recentlyDeanimated)
+                sprite.AnimateOut();
         }
 
         public void Dispose()

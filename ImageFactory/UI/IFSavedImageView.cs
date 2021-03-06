@@ -20,6 +20,7 @@ namespace ImageFactory.UI
     internal class IFSavedImageView : BSMLAutomaticViewController
     {
         public event Action<IFImage, IFSaveData>? EditImageRequested;
+        public bool ShouldRefresh { get; set; }
 
         #region Injected Dependencies
 
@@ -58,6 +59,7 @@ namespace ImageFactory.UI
 
             _loadingCanvas.alpha = 1f;
             _loadingCanvas.gameObject.SetActive(true);
+            _selectionCanvas.gameObject.SetActive(false);
             _tweeningManager.KillAllTweens(_loadingCanvas);
             _tweeningManager.AddTween(new FloatTween(1f, 0f, val =>
             {
@@ -82,7 +84,6 @@ namespace ImageFactory.UI
 
         [UIComponent("image-list")]
         protected readonly CustomCellListTableData _imageList = null!;
-        private bool _didLoad = false;
 
         [UIComponent("up-button")]
         protected readonly Button _upbutton = null!;
@@ -92,23 +93,39 @@ namespace ImageFactory.UI
 
         public async Task LoadImages()
         {
-            if (_didLoad)
-                return;
+            foreach (var image in _imageList.data.Cast<EditImageCell>())
+            {
+                if (image.stateUpdater != null && image.previewImage != null)
+                {
+                    image.image.animationData!.activeImages.Remove(image.previewImage);
+                    image.stateUpdater.image = null;
+                }
+            }
+            foreach (Transform pres in _imageList.tableView.contentTransform)
+                Destroy(pres.gameObject);
 
+            _imageList.data.Clear();
+            _imageList.tableView.ReloadData();
             foreach (var metadata in _metadataStore.AllMetadata())
                 await _imageManager.LoadImage(metadata);
 
             var loadedImages = _imageManager.LoadedImages();
             await AnimateToSelectionCanvas();
-            _didLoad = true;
 
             foreach (var save in _config.SaveData)
             {
                 var image = loadedImages.FirstOrDefault(i => i.metadata.file.Name == save.LocalFilePath);
                 if (image != null)
-                    _imageList.data.Add(new EditImageCell(image, save, ClickedImageEdit));
+                    _imageList.data.Add(new EditImageCell(image, save, ClickedImageEdit, ClickedImageDelete));
             }
             _imageList.tableView.ReloadData();
+        }
+
+        private void ClickedImageDelete(IFImage image, IFSaveData saveData)
+        {
+            _config.SaveData.Remove(saveData);
+            _imageManager.UpdateImage(image, saveData, ImageUpdateArgs.Action.Removed);
+            _config.Changed();
         }
 
         private void ClickedImageEdit(IFImage image, IFSaveData saveData)
@@ -127,40 +144,67 @@ namespace ImageFactory.UI
             _ = LoadImages();
         }
 
+        protected void Start()
+        {
+            _imageManager.ImageUpdated += ImageManager_ImageUpdated;
+        }
+
+        private void ImageManager_ImageUpdated(object sender, ImageUpdateArgs e)
+        {
+            if (ShouldRefresh)
+                _ = LoadImages();
+        }
+
+        protected override void OnDestroy()
+        {
+             _imageManager.ImageUpdated -= ImageManager_ImageUpdated;
+            base.OnDestroy();
+        }
+
         private class EditImageCell
         {
             public readonly IFImage image;
             public readonly IFSaveData saveData;
             public readonly Action<IFImage, IFSaveData> editAction;
+            public readonly Action<IFImage, IFSaveData> deleteAction;
+            public AnimationStateUpdater stateUpdater = null!;
 
             [UIComponent("preview")]
-            protected readonly ImageView _previewImage = null!;
+            public readonly ImageView previewImage = null!;
 
-            [UIComponent("file-name")]
-            protected readonly CurvedTextMeshPro _fileName = null!;
+            [UIComponent("save-name")]
+            protected readonly CurvedTextMeshPro _saveName = null!;
 
-            public EditImageCell(IFImage image, IFSaveData saveData, Action<IFImage, IFSaveData> editClicked)
+            public EditImageCell(IFImage image, IFSaveData saveData, Action<IFImage, IFSaveData> editClicked, Action<IFImage, IFSaveData> deleteClicked)
             {
                 this.image = image;
                 this.saveData = saveData;
                 editAction = editClicked;
+                deleteAction = deleteClicked;
             }
 
             [UIAction("#post-parse")]
             protected void Parsed()
             {
-                _previewImage.sprite = image.sprite;
+                previewImage.sprite = image.sprite;
                 if (image.animationData != null)
                 {
-                    var stateUpdater = _previewImage.gameObject.AddComponent<AnimationStateUpdater>();
-                    image.animationData.activeImages.Add(_previewImage);
-                    stateUpdater.image = _previewImage;
+                    stateUpdater = previewImage.gameObject.AddComponent<AnimationStateUpdater>();
+                    image.animationData.activeImages.Add(previewImage);
+                    stateUpdater.image = previewImage;
                 }
                 else
                 {
-                    _previewImage.material = Utilities.UINoGlowRoundEdge;
+                    previewImage.material = Utilities.UINoGlowRoundEdge;
                 }
-                _fileName.text = saveData.Name;
+                _saveName.text = saveData.Name;
+                _saveName.color = saveData.Enabled ? Color.green : Color.red;
+            }
+
+            [UIAction("clicked-delete-button")]
+            protected void ClickedDeleteButton()
+            {
+                deleteAction?.Invoke(image, saveData);
             }
 
             [UIAction("clicked-edit-button")]

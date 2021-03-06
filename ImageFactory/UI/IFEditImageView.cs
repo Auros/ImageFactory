@@ -24,6 +24,7 @@ namespace ImageFactory.UI
         private Config _config = null!;
         private DiContainer _container = null!;
         private ViewController _dummyView = null!;
+        private ImageManager _imageManager = null!;
         private FloatingScreen _floatingScreen = null!; 
         private InputFieldView _editorFieldView = null!;
         private InputFieldView _templateFieldView = null!;
@@ -72,10 +73,11 @@ namespace ImageFactory.UI
         }
 
         [Inject]
-        public void Construct(Config config, DiContainer container, ImageEditorManager imageEditorManager, PhysicsRaycasterWithCache cacheRaycaster, LevelSearchViewController levelSearchViewController)
+        public void Construct(Config config, DiContainer container, ImageManager imageManager, ImageEditorManager imageEditorManager, PhysicsRaycasterWithCache cacheRaycaster, LevelSearchViewController levelSearchViewController)
         {
             _config = config;
             _container = container;
+            _imageManager = imageManager;
             _imageEditorManager = imageEditorManager;
             _presentationHost = container.Instantiate<PresentationHost>();
             _templateFieldView = levelSearchViewController.GetField<InputFieldView, LevelSearchViewController>("_searchTextInputFieldView");
@@ -95,6 +97,7 @@ namespace ImageFactory.UI
         public void EnableEditing(IFImage image, IFSaveData? data = null)
         {
             _presentationHost.Reset();
+            _imageManager.DeanimateAll();
             _presentationHost.LastData = data?.Presentation;
             var saveData = data ?? new IFSaveData { Enabled = true, Position = new Vector3(0f, 2f, 2f), Name = image.metadata.file.Name, LocalFilePath = image.metadata.file.Name };
             bool isNew = data == null;
@@ -123,6 +126,9 @@ namespace ImageFactory.UI
                 if (isNew)
                     _config.SaveData.Add(saveData);
                 _config.Changed();
+
+                // Tells the image manager to send an event out to allow everything else to update their image states.
+                _imageManager.UpdateImage(image, saveData, isNew ? ImageUpdateArgs.Action.Added : ImageUpdateArgs.Action.Updated);
             });
             _floatingScreen.ScreenPosition = _imageEditorManager.Position;
             _floatingScreen.ScreenRotation = _imageEditorManager.Rotation;
@@ -150,6 +156,7 @@ namespace ImageFactory.UI
         protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
         {
             _presentationHost.Reset();
+            _imageManager.ReanimateAll();
             _imageEditorManager.Dismiss(false);
             _floatingScreen.SetRootViewController(null, AnimationType.None);
             base.DidDeactivate(removedFromHierarchy, screenSystemDisabling);
