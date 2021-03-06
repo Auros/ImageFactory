@@ -29,9 +29,9 @@ namespace ImageFactory.Managers
                 new Value(ScenePresenter.GAME_ID),
                 new Value(PercentPresenter.PERCENT_ID, false, new ValueConstructor("When", "Below", new List<object> { "Below", "Above" }), new ValueConstructor("%", 0.8f, casted)),
                 new Value(PercentPresenter.PERCENT_RANGE_ID, false, new ValueConstructor("When Above (%)", 0.8f, casted), new ValueConstructor("and Below (%)", 0.9f, casted)),
-                new Value("Combo", true, new ValueConstructor("On Combo", 100, xcast)),
-                new Value("Combo Increment", true, new ValueConstructor("On Every X Combo", 100, xcast)),
-                new Value("Combo Drop", true),
+                new Value(ComboPresenter.COMBO_ID, true, new ValueConstructor("On Combo", 100, xcast)),
+                new Value(ComboPresenter.COMBO_INCREMENT, true, new ValueConstructor("On Every X Combo", 100, xcast)),
+                new Value(ComboPresenter.COMBO_DROP, true),
                 new Value("On Last Note", true)
             };
         }

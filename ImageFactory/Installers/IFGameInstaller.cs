@@ -8,6 +8,7 @@ namespace ImageFactory.Installers
         public override void InstallBindings()
         {
             Container.BindInterfacesTo<PercentPresenter>().AsSingle();
+            Container.BindInterfacesTo<ComboPresenter>().AsSingle();
         }
     }
 }

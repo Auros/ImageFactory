@@ -37,7 +37,6 @@ namespace ImageFactory.Presenters
                 IFImage.Metadata? metadata = _imageManager.GetMetadata(save);
                 if (metadata.HasValue)
                 {
-                    _imageManager.Spawn(save);
                     var image = await _imageManager.LoadImage(metadata.Value);
                     if (image != null)
                     {
@@ -71,7 +70,6 @@ namespace ImageFactory.Presenters
                 IFImage.Metadata? metadata = _imageManager.GetMetadata(save);
                 if (metadata.HasValue)
                 {
-                    _imageManager.Spawn(save);
                     var image = await _imageManager.LoadImage(metadata.Value);
                     if (image != null)
                     {
