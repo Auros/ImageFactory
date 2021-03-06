@@ -9,12 +9,12 @@
           <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="9" pref-height="9">
             <image id="preview" preserve-aspect="true" />
           </vertical>
-          <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="48" pref-height="9">
+          <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="45" pref-height="9">
             <text id="save-name" align="Left" />
           </vertical>
-          <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="21" pref-height="9">
-            <button text="❌" pref-width="9" pref-height="9" on-click="clicked-delete-button" face-color="red" />
-            <button text="↩" pref-width="9" pref-height="9" on-click="clicked-edit-button" />
+          <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="25" pref-height="9">
+            <button text="❌" pref-width="12" pref-height="9" on-click="clicked-delete-button" face-color="red" />
+            <button text="↩" pref-width="12" pref-height="9" on-click="clicked-edit-button" />
           </horizontal>
         </horizontal>
       </custom-list>
