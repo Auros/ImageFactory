@@ -21,7 +21,6 @@ namespace ImageFactory.Installers
             Container.BindInterfacesTo<SimpleAnimationStateUpdater>().AsSingle();
             Container.BindInterfacesAndSelfTo<MetadataStore>().AsSingle();
             Container.Bind<DynamicCacheMediaLoader>().AsSingle();
-            Container.Bind<ImageEditorManager>().AsSingle();
             Container.Bind<PresentationStore>().AsSingle();
 
             Container.BindMemoryPool<IFSprite, IFSprite.Pool>().WithInitialSize(5).FromComponentInNewPrefab(ImageTemplate());

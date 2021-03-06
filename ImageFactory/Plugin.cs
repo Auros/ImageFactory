@@ -31,8 +31,7 @@ namespace ImageFactory
             zenjector.OnApp<IFCoreInstaller>();
             zenjector.OnMenu<IFUIInstaller>();
 
-            zenjector.OnMenu<IFImageInstaller>();
-            zenjector.OnGame<IFImageInstaller>();
+            zenjector.OnApp<IFImageInstaller>();
         }
 
         [OnEnable]

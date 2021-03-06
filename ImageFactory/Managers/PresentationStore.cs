@@ -1,4 +1,5 @@
 ﻿using ImageFactory.Models;
+using ImageFactory.Presenters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,10 +23,10 @@ namespace ImageFactory.Managers
 
             _presentationValues = new List<Value>
             {
-                new Value("Everywhere"),
-                new Value("In Menu"),
+                new Value(ScenePresenter.EVERYWHERE_ID),
+                new Value(ScenePresenter.MENU_ID),
                 new Value("Results Screen", false, new ValueConstructor("When", "Finished", new List<object> { "Finished", "Passed", "Failed" })),
-                new Value("In Song"),
+                new Value(ScenePresenter.GAME_ID),
                 new Value("%", false, new ValueConstructor("When", "Below", new List<object> { "Below", "Above" }), new ValueConstructor("%", 0.8f, casted)),
                 new Value("% Range", false, new ValueConstructor("When Above (%)", 0.8f, casted), new ValueConstructor("and Below (%)", 0.9f, casted)),
                 new Value("Combo", true, new ValueConstructor("On Combo", 100, xcast)),

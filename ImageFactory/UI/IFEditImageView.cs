@@ -123,6 +123,9 @@ namespace ImageFactory.UI
                 saveData.Presentation.Duration = val.Item3 ?? 0f;
                 saveData.Presentation.Value = val.Item2;
 
+                if (string.IsNullOrWhiteSpace(saveData.Presentation.PresentationID))
+                    saveData.Presentation.PresentationID = Presenters.ScenePresenter.EVERYWHERE_ID;
+
                 if (isNew)
                     _config.SaveData.Add(saveData);
                 _config.Changed();

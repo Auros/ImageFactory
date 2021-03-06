@@ -14,6 +14,7 @@ namespace ImageFactory.Installers
             // binded to them will be created anyway, since internally Zenject requests for EVERY kernel interface.
             Container.BindInterfacesTo<MenuButtonManager>().AsSingle();
 
+            Container.Bind<ImageEditorManager>().AsSingle();
             Container.Bind<IFInfoView>().FromNewComponentAsViewController().AsSingle();
             Container.Bind<IFNewImageView>().FromNewComponentAsViewController().AsSingle();
             Container.Bind<IFEditImageView>().FromNewComponentAsViewController().AsSingle();

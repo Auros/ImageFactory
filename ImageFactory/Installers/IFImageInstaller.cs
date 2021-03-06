@@ -1,4 +1,5 @@
 ﻿using ImageFactory.Managers;
+using ImageFactory.Presenters;
 using Zenject;
 
 namespace ImageFactory.Installers
@@ -8,8 +9,7 @@ namespace ImageFactory.Installers
         public override void InstallBindings()
         {
             Container.BindInterfacesAndSelfTo<ImageManager>().AsSingle();
-
-            Container.BindInterfacesAndSelfTo<TestStuff>().AsSingle();
+            Container.BindInterfacesTo<ScenePresenter>().AsSingle();
         }
     }
 }

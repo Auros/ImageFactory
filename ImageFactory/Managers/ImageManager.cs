@@ -27,6 +27,20 @@ namespace ImageFactory.Managers
             _spritePool = new MonoMemoryPoolContainer<IFSprite>(spritePool);
         }
 
+        public IFSprite Spawn(IFSaveData data)
+        {
+            var sprite = _spritePool.Spawn();
+            sprite.Position = data.Position;
+            sprite.Rotation = data.Rotation;
+            sprite.Size = data.Size;
+            return sprite;
+        }
+
+        public void Despawn(IFSprite sprite)
+        {
+            _spritePool.Despawn(sprite);
+        }
+
         public IEnumerable<IFImage> LoadedImages()
         {
             return _loadedImages;
@@ -41,7 +55,7 @@ namespace ImageFactory.Managers
             var image = await _imageFactorySpriteLoader.LoadAsync(metadata);
             if (!(image is null) && !_loadedImages.Any(ifi => ifi.metadata.file == metadata.file))
             {
-                _siraLog.Debug($"X: {image.width}px, Y: {image.height}px, Size: {image.metadata.size} bytes, Load Time: {image.loadTime.TotalSeconds}");
+                //_siraLog.Debug($"X: {image.width}px, Y: {image.height}px, Size: {image.metadata.size} bytes, Load Time: {image.loadTime.TotalSeconds}");
                 _loadedImages.Add(image);
             }
             return image;
