@@ -1,4 +1,5 @@
 ﻿using ImageFactory.Models;
+using Tweening;
 using UnityEngine;
 using Zenject;
 
@@ -10,7 +11,9 @@ namespace ImageFactory.Components
         [SerializeField] private Shader _shader = null!;
         [SerializeField] private Material _material = null!;
         [SerializeField] private SpriteRenderer _spriteRenderer = null!;
+        [Inject] private TweeningManager _tweeningManager = null!;
         private RendererAnimationStateUpdater? _animator = null!;
+        public const float ANIM_TIME = 0.35f;
 
         // If we're updating the size of an animated image, we need to recalculate its position extents to remain centered.
         public Vector2 Size
@@ -118,12 +121,35 @@ namespace ImageFactory.Components
 
         public void AnimateIn()
         {
+            _tweeningManager.KillAllTweens(this);
             _spriteRenderer.enabled = true;
+            var lockSize = Size;
+
+            Size = new Vector2(lockSize.x, 0f);
+            var tween = new FloatTween(0f, lockSize.y, val =>
+            {
+                Size = new Vector2(lockSize.x, val);
+            }, ANIM_TIME, EaseType.OutCubic)
+            {
+                onCompleted = delegate () { Size = lockSize; },
+                onKilled = delegate () { Size = lockSize; }
+            };
+            _tweeningManager.AddTween(tween, this);
         }
 
         public void AnimateOut()
         {
-            _spriteRenderer.enabled = false;
+            _tweeningManager.KillAllTweens(this);
+            var lockSize = Size;
+            var tween = new FloatTween(lockSize.y, 0f, val =>
+            {
+                Size = new Vector2(lockSize.x, val);
+            }, ANIM_TIME, EaseType.OutCubic)
+            {
+                onCompleted = delegate () { _spriteRenderer.enabled = false; Size = lockSize; },
+                onKilled = delegate () { _spriteRenderer.enabled = false; Size = lockSize; }
+            };
+            _tweeningManager.AddTween(tween, this);
         }
 
         public class Pool : MonoMemoryPool<IFSprite> { /*Initialize Pool Type*/ }

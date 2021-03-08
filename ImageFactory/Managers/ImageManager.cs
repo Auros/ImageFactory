@@ -1,7 +1,6 @@
 ﻿using ImageFactory.Components;
 using ImageFactory.Interfaces;
 using ImageFactory.Models;
-using SiraUtil.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace ImageFactory.Managers
 {
-    internal class ImageManager : IDisposable
+    internal class ImageManager
     {
-        private readonly SiraLog _siraLog;
         private readonly List<IFImage> _loadedImages;
         private readonly MetadataStore _metadataStore;
         private readonly MonoMemoryPoolContainer<IFSprite> _spritePool;
@@ -20,9 +18,8 @@ namespace ImageFactory.Managers
 
         public event EventHandler<ImageUpdateArgs>? ImageUpdated;
 
-        public ImageManager(SiraLog siraLog, MetadataStore metadataStore, IFSprite.Pool spritePool, IImageFactorySpriteLoader imageFactorySpriteLoader)
+        public ImageManager(MetadataStore metadataStore, IFSprite.Pool spritePool, IImageFactorySpriteLoader imageFactorySpriteLoader)
         {
-            _siraLog = siraLog;
             _metadataStore = metadataStore;
             _loadedImages = new List<IFImage>();
             _imageFactorySpriteLoader = imageFactorySpriteLoader;
@@ -35,11 +32,14 @@ namespace ImageFactory.Managers
             sprite.Position = data.Position;
             sprite.Rotation = data.Rotation;
             sprite.Size = data.Size;
+            sprite.AnimateIn();
             return sprite;
         }
 
-        public void Despawn(IFSprite sprite)
+        public async void Despawn(IFSprite sprite)
         {
+            sprite.AnimateOut();
+            await SiraUtil.Utilities.AwaitSleep((int)(IFSprite.ANIM_TIME * 1000f));
             sprite.Image = null;
             sprite.gameObject.SetActive(false);
             _spritePool.Despawn(sprite);
@@ -88,11 +88,6 @@ namespace ImageFactory.Managers
             _recentlyDeanimated.AddRange(_spritePool.activeItems);
             foreach (var sprite in _recentlyDeanimated)
                 sprite.AnimateOut();
-        }
-
-        public void Dispose()
-        {
-
         }
     }
 }
