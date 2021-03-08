@@ -16,8 +16,8 @@ namespace ImageFactory.Installers
 
         public override void InstallBindings()
         {
-            //if (!_config.IgnoreTextAndHUDs && _sceneSetupData.playerSpecificSettings.noTextsAndHuds)
-            //    return;
+            if (!_config.IgnoreTextAndHUDs && _sceneSetupData.playerSpecificSettings.noTextsAndHuds)
+                return;
 
             Container.BindInterfacesTo<LastNotePresenter>().AsSingle();
             Container.BindInterfacesTo<PercentPresenter>().AsSingle();

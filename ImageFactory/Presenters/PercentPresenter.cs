@@ -85,6 +85,7 @@ namespace ImageFactory.Presenters
                 }
             }
             _relativeScoreAndImmediateRankCounter.relativeScoreOrImmediateRankDidChangeEvent += RelativeScoreAndImmediateRankCounter_relativeScoreOrImmediateRankDidChangeEvent;
+            RelativeScoreAndImmediateRankCounter_relativeScoreOrImmediateRankDidChangeEvent();
         }
 
         private void RelativeScoreAndImmediateRankCounter_relativeScoreOrImmediateRankDidChangeEvent()

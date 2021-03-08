@@ -142,8 +142,8 @@ namespace ImageFactory.Components
                 Size = new Vector2(lockSize.x, val);
             }, ANIM_TIME, EaseType.OutCubic)
             {
-                onCompleted = delegate () { _spriteRenderer.enabled = false; Size = lockSize; },
-                onKilled = delegate () { _spriteRenderer.enabled = false; Size = lockSize; }
+                onCompleted = delegate () { Size = lockSize;  },
+                onKilled = delegate () { Size = lockSize; }
             };
             _tweeningManager.AddTween(tween, this);
         }

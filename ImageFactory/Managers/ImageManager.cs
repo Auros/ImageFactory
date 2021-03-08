@@ -29,6 +29,7 @@ namespace ImageFactory.Managers
         public IFSprite Spawn(IFSaveData data)
         {
             var sprite = _spritePool.Spawn();
+            sprite.transform.SetParent(null);
             sprite.Position = data.Position;
             sprite.Rotation = data.Rotation;
             sprite.Size = data.Size;
@@ -36,7 +37,12 @@ namespace ImageFactory.Managers
             return sprite;
         }
 
-        public async void Despawn(IFSprite sprite)
+        public void Despawn(IFSprite sprite)
+        {
+            _ = DespawnInternal(sprite);
+        }
+
+        private async Task DespawnInternal(IFSprite sprite)
         {
             sprite.AnimateOut();
             await SiraUtil.Utilities.AwaitSleep((int)(IFSprite.ANIM_TIME * 1000f));

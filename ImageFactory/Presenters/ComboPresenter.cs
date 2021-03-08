@@ -78,7 +78,7 @@ namespace ImageFactory.Presenters
             foreach (var image in _savedImages)
             {
                 if (image.ForDrop)
-                    return;
+                    continue;
 
                 bool shouldPresent;
                 if (image.Mod)
