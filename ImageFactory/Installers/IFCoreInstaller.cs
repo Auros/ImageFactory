@@ -31,7 +31,7 @@ namespace ImageFactory.Installers
             GameObject root = new GameObject("IF Image");
             IFSprite ifc = root.AddComponent<IFSprite>();
             SpriteRenderer renderer = root.AddComponent<SpriteRenderer>();
-            ifc.Setup(renderer, BeatSaberMarkupLanguage.Utilities.ImageResources.NoGlowMat, Resources.FindObjectsOfTypeAll<Shader>().First(s => s.name == "Custom/Sprite"));
+            ifc.Setup(renderer);
             root.gameObject.SetActive(false);
             return ifc;
         }

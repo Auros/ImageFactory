@@ -42,6 +42,19 @@ namespace ImageFactory
             }
         }
 
+        private static Shader _shader = null!;
+        public static Shader ImageShader
+        {
+            get
+            {
+                if (_shader == null)
+                {
+                    _shader = Resources.FindObjectsOfTypeAll<Shader>().First(s => s.name == "Custom/Sprite");
+                }
+                return _shader;
+            }
+        }
+
         public static void SetButtons(this TableView tableView, Button upButton, Button downButton)
         {
             var scroller = Scroller(ref tableView);

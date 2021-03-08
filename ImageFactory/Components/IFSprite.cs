@@ -8,8 +8,6 @@ namespace ImageFactory.Components
     internal class IFSprite : MonoBehaviour
     {
         private IFImage? _image;
-        [SerializeField] private Shader _shader = null!;
-        [SerializeField] private Material _material = null!;
         [SerializeField] private SpriteRenderer _spriteRenderer = null!;
         [Inject] private readonly TweeningManager _tweeningManager = null!;
         private RendererAnimationStateUpdater? _animator = null!;
@@ -106,17 +104,15 @@ namespace ImageFactory.Components
             }
         }
 
-        internal void Setup(SpriteRenderer renderer, Material material, Shader shader)
+        internal void Setup(SpriteRenderer renderer)
         {
-            _shader = shader;
-            _material = material;
             _spriteRenderer = renderer;
         }
 
         protected void Start()
         {
-            _spriteRenderer.material = _material;
-            _spriteRenderer.material.shader = _shader;
+            _spriteRenderer.material = BeatSaberMarkupLanguage.Utilities.ImageResources.NoGlowMat;
+            _spriteRenderer.material.shader = Utilities.ImageShader;
         }
 
         public void AnimateIn()

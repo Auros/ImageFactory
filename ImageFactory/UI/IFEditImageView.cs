@@ -29,6 +29,7 @@ namespace ImageFactory.UI
         private InputFieldView _editorFieldView = null!;
         private InputFieldView _templateFieldView = null!;
         private ImageEditorManager _imageEditorManager = null!;
+        private PhysicsRaycasterWithCache _cacheRaycaster = null!;
 
         [UIAction("cancel-clicked")]
         protected void CancelClicked()
@@ -78,19 +79,20 @@ namespace ImageFactory.UI
             _config = config;
             _container = container;
             _imageManager = imageManager;
+            _cacheRaycaster = cacheRaycaster;
             _imageEditorManager = imageEditorManager;
             _presentationHost = container.Instantiate<PresentationHost>();
             _templateFieldView = levelSearchViewController.GetField<InputFieldView, LevelSearchViewController>("_searchTextInputFieldView");
-            _floatingScreen = FloatingScreen.CreateFloatingScreen(new Vector2(10, 10f), true, Vector3.zero, Quaternion.identity, 0f, false);
-            _floatingScreen.GetComponent<VRGraphicRaycaster>().SetField("_physicsRaycaster", cacheRaycaster);
-            _dummyView = BeatSaberUI.CreateViewController<ViewController>();
-            _floatingScreen.transform.localScale = Vector3.one;
-            _dummyView.name = "IF Editor DummyViewController";
-            _floatingScreen.name = "IF Editor Cube";
         }
 
         protected void Start()
         {
+            _floatingScreen = FloatingScreen.CreateFloatingScreen(new Vector2(10, 10f), true, Vector3.zero, Quaternion.identity, 0f, false);
+            _floatingScreen.GetComponent<VRGraphicRaycaster>().SetField("_physicsRaycaster", _cacheRaycaster);
+            _dummyView = BeatSaberUI.CreateViewController<ViewController>();
+            _floatingScreen.transform.localScale = Vector3.one;
+            _dummyView.name = "IF Editor DummyViewController";
+            _floatingScreen.name = "IF Editor Cube";
             _floatingScreen.gameObject.SetActive(false);
         }
 
