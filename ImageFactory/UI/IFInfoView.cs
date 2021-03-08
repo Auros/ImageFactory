@@ -2,7 +2,6 @@
 using BeatSaberMarkupLanguage.Parser;
 using BeatSaberMarkupLanguage.ViewControllers;
 using HMUI;
-using ImageFactory.Interfaces;
 using ImageFactory.Managers;
 using IPA.Loader;
 using IPA.Utilities;
@@ -162,14 +161,14 @@ namespace ImageFactory.UI
 
             _helpSubIcon = new ClickableSubIcon(
                 "Help and FAQ",
-                "ImageFactory allows you to place custom images throughout your game. Everything has been designed to be easy for the user to use and customizable. To learn more about how to use this mod, you can start the <color=#dbb716>tutorial</color>.",
+                "ImageFactory allows you to place custom images throughout your game. Everything has been designed to be easy for the user to use and customize. To learn more about how to use this mod, you can start the <color=#dbb716>tutorial</color>.",
                 "<color=#dbb716>Start Tutorial</color>",
                 _helpImage.sprite,
                 () => { }); // TODO: Start the tutorial
 
             _githubSubIcon = new ClickableSubIcon(
                 "Github",
-                "ImageFactory is open source! You can view it on GitHub. Find a bug report or have a feature request? Submit an issue on GitHub.",
+                "ImageFactory is open source! You can view it on GitHub. Have a bug report or a feature request? Submit an issue on GitHub.",
                 "Open Github in Browser",
                 _githubImage.sprite,
                 () => { Application.OpenURL("https://github.com/Auros/ImageFactory"); }); 

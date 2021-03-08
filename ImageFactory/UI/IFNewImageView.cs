@@ -6,6 +6,7 @@ using HMUI;
 using ImageFactory.Managers;
 using ImageFactory.Models;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Tweening;
 using UnityEngine;
@@ -98,7 +99,7 @@ namespace ImageFactory.UI
             foreach (var metadata in _metadataStore.AllMetadata())
                 await _imageManager.LoadImage(metadata);
 
-            var loadedImages = _imageManager.LoadedImages();
+            var loadedImages = _imageManager.LoadedImages().OrderBy(i => i.metadata.file.Name);
             await AnimateToSelectionCanvas();
             _didLoad = true;
 

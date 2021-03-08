@@ -106,18 +106,18 @@ namespace ImageFactory.UI
 
             _imageList.data.Clear();
             _imageList.tableView.ReloadData();
-            foreach (var metadata in _metadataStore.AllMetadata())
-                await _imageManager.LoadImage(metadata);
-
-            var loadedImages = _imageManager.LoadedImages();
-            await AnimateToSelectionCanvas();
 
             foreach (var save in _config.SaveData)
             {
-                var image = loadedImages.FirstOrDefault(i => i.metadata.file.Name == save.LocalFilePath);
-                if (image != null)
-                    _imageList.data.Add(new EditImageCell(image, save, ClickedImageEdit, ClickedImageDelete));
+                IFImage.Metadata? metadata = _imageManager.GetMetadata(save);
+                if (metadata.HasValue)
+                {
+                    var image = await _imageManager.LoadImage(metadata.Value);
+                    if (image != null)
+                        _imageList.data.Add(new EditImageCell(image, save, ClickedImageEdit, ClickedImageDelete));
+                }
             }
+            await AnimateToSelectionCanvas();
             _imageList.tableView.ReloadData();
         }
 

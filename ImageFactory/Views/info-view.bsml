@@ -27,7 +27,7 @@
           <text text="~modal-title" align="CaplineLeft" font-size="10" />
         </horizontal>
       </horizontal>
-      <image src="ImageFactory.Resources.pixel.png" pref-width="85" pref-height="0.1" />
+      <image src="ImageFactory.Resources.pixel.png" pref-width="85" pref-height="0.2" />
       <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="85" preferred-height="37">
         <vertical pref-width="83" preferred-height="28">
           <text text="~modal-text" word-wrapping="true" />
