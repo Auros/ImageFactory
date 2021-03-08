@@ -32,7 +32,7 @@ namespace ImageFactory.Managers
                 new Value(ComboPresenter.COMBO_ID, true, new ValueConstructor("On Combo", 100, xcast)),
                 new Value(ComboPresenter.COMBO_INCREMENT, true, new ValueConstructor("On Every X Combo", 100, xcast)),
                 new Value(ComboPresenter.COMBO_DROP, true),
-                new Value("On Last Note", true)
+                new Value(LastNotePresenter.LASTNOTE_ID, true)
             };
         }
 
