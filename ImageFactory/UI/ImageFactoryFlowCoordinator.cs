@@ -7,24 +7,30 @@ namespace ImageFactory.UI
 {
     internal class ImageFactoryFlowCoordinator : FlowCoordinator
     {
+        private Config _config = null!;
         private IFInfoView _infoView = null!;
+        private bool _initialEnabledValue = false;
         private IFNewImageView _newImageView = null!;
         private IFEditImageView _editImageView = null!;
         private IFSavedImageView _savedImageView = null!;
         private MainFlowCoordinator _mainFlowCoordinator = null!;
+        private MenuTransitionsHelper _menuTransitionsHelper = null!;
 
         [Inject]
-        public void Inject(IFInfoView infoView, IFNewImageView newImageView, IFEditImageView editImageView, IFSavedImageView savedImageView, MainFlowCoordinator mainFlowCoordinator)
+        public void Inject(Config config, IFInfoView infoView, IFNewImageView newImageView, IFEditImageView editImageView, IFSavedImageView savedImageView, MainFlowCoordinator mainFlowCoordinator, MenuTransitionsHelper menuTransitionsHelper)
         {
+            _config = config;
             _infoView = infoView;
             _newImageView = newImageView;
             _editImageView = editImageView;
             _savedImageView = savedImageView;
             _mainFlowCoordinator = mainFlowCoordinator;
+            _menuTransitionsHelper = menuTransitionsHelper;
         }
 
         protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
+            _initialEnabledValue = _config.Enabled;
             if (firstActivation)
             {
                 // Set our title and back button.
@@ -84,6 +90,11 @@ namespace ImageFactory.UI
             if (_editImageView.isInViewControllerHierarchy)
             {
                 DismissEditView();
+                return;
+            }
+            if (_config.Enabled != _initialEnabledValue)
+            {
+                _menuTransitionsHelper.RestartGame();
                 return;
             }
             _mainFlowCoordinator.DismissFlowCoordinator(this); // BSML Extension

@@ -14,9 +14,14 @@ namespace ImageFactory
         [NonNullable, UseConverter(typeof(VersionConverter))]
         public virtual SemVer.Version Version { get; set; } = new SemVer.Version("0.0.0");
 
+        public virtual bool Enabled { get; set; } = true;
+        public virtual bool AllowAnimations { get; set; } = true;
+        public virtual bool IgnoreTextAndHUDs { get; set; } = false;
+
         [NonNullable, UseConverter(typeof(ListConverter<IFSaveData>))]
         public virtual List<IFSaveData> SaveData { get; set; } = new List<IFSaveData>();
 
         public virtual void Changed() { }
+        public virtual void CopyFrom(Config _) { }
     }
 }

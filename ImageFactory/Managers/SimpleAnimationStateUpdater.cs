@@ -10,9 +10,15 @@ namespace ImageFactory.Managers
     // Mostly borrowed from BSML's AnimationController
     internal class SimpleAnimationStateUpdater : ITickable, IAnimationStateUpdater
     {
+        private readonly Config _config;
         private readonly Dictionary<string, RendererAnimationControllerData> _registeredAnimations = new Dictionary<string, RendererAnimationControllerData>();
 
-        public bool Enabled { get; set; } = true;
+        public bool Enabled { get => _config.AllowAnimations; set => _ = value; }
+
+        public SimpleAnimationStateUpdater(Config config)
+        {
+            _config = config;
+        }
 
         public RendererAnimationControllerData Register(string id, ProcessedAnimation processData)
         {

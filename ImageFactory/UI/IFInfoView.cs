@@ -2,6 +2,7 @@
 using BeatSaberMarkupLanguage.Parser;
 using BeatSaberMarkupLanguage.ViewControllers;
 using HMUI;
+using ImageFactory.Interfaces;
 using ImageFactory.Managers;
 using IPA.Loader;
 using IPA.Utilities;
@@ -19,16 +20,20 @@ namespace ImageFactory.UI
     [HotReload(RelativePathToLayout = @"..\Views\info-view.bsml")]
     internal class IFInfoView : BSMLAutomaticViewController
     {
+        private Config _config = null!;
         private Version _version = null!;
         private ClickableSubIcon? _lastSubIcon;
         private ISpriteAsyncLoader _spriteAsyncLoader = null!;
+        private MenuTransitionsHelper _menuTransitionsHelper = null!;
         internal static readonly FieldAccessor<ImageView, float>.Accessor ImageSkew = FieldAccessor<ImageView, float>.GetAccessor("_skew");
 
         [Inject]
-        public void Construct(DynamicCacheMediaLoader dynamicCacheMediaLoader, UBinder<Plugin, PluginMetadata> metadataBinder)
+        public void Construct(Config config, DynamicCacheMediaLoader dynamicCacheMediaLoader, MenuTransitionsHelper menuTransitionsHelper, UBinder<Plugin, PluginMetadata> metadataBinder)
         {
+            _config = config;
             _version = metadataBinder.Value.Version;
             _spriteAsyncLoader = dynamicCacheMediaLoader;
+            _menuTransitionsHelper = menuTransitionsHelper;
         }
 
         [UIParams]
@@ -128,7 +133,7 @@ namespace ImageFactory.UI
             _githubImage.sprite = await _spriteAsyncLoader.LoadSpriteAsync("https://cdn.sira.pro/images/common/github.png", CancellationToken.None);
             _bandootImage.sprite = await _spriteAsyncLoader.LoadSpriteAsync("https://cdn.sira.pro/images/common/bandoot.png", CancellationToken.None);
             _aurosImage.sprite = await _spriteAsyncLoader.LoadSpriteAsync("https://cdn.sira.pro/images/common/auros.png", CancellationToken.None);
-            
+
             _settingsImage.material = Utilities.UINoGlowRoundEdge;
             _resetImage.material = Utilities.UINoGlowRoundEdge;
             _helpImage.material = Utilities.UINoGlowRoundEdge;
@@ -148,8 +153,12 @@ namespace ImageFactory.UI
                 "Reset",
                 "Note: This is a permanent action that can't be undone. This will reset all of your settings. (Your images will not be deleted).",
                 "<color=red>Reset</color>",
-                _resetImage.sprite,
-                () => { }); // TODO: Reset Config
+                _resetImage.sprite, () =>
+                {
+                    _config.CopyFrom(new Config { Version = _config.Version });
+                    _config.Changed();
+                    _menuTransitionsHelper.RestartGame();
+                });
 
             _helpSubIcon = new ClickableSubIcon(
                 "Help and FAQ",
@@ -202,6 +211,31 @@ namespace ImageFactory.UI
         [UIAction("clicked-github")] protected void ClickedGitHub() => PresentSubIcon(_githubSubIcon);
         [UIAction("clicked-bandoot")] protected void ClickedBandoot() => PresentSubIcon(_bandootSubIcon);
         [UIAction("clicked-auros")] protected void ClickedAuros() => PresentSubIcon(_aurosSubIcon);
+
+        #region Settings Stuff
+
+        [UIValue("settings-enabled")]
+        protected bool SettingsEnabled
+        {
+            get => _config.Enabled;
+            set { _config.Enabled = value; NotifyPropertyChanged(); }
+        }
+
+        [UIValue("settings-animations-enabled")]
+        protected bool AnimationsEnabled
+        {
+            get => _config.AllowAnimations;
+            set { _config.AllowAnimations = value; NotifyPropertyChanged(); }
+        }
+
+        [UIValue("settings-ignore-no-text")]
+        protected bool SettingsIgnoreNoText
+        {
+            get => _config.IgnoreTextAndHUDs;
+            set { _config.IgnoreTextAndHUDs = value; NotifyPropertyChanged(); }
+        }
+
+        #endregion 
 
         private class ClickableSubIcon
         {

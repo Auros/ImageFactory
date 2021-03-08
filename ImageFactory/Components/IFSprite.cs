@@ -11,7 +11,7 @@ namespace ImageFactory.Components
         [SerializeField] private Shader _shader = null!;
         [SerializeField] private Material _material = null!;
         [SerializeField] private SpriteRenderer _spriteRenderer = null!;
-        [Inject] private TweeningManager _tweeningManager = null!;
+        [Inject] private readonly TweeningManager _tweeningManager = null!;
         private RendererAnimationStateUpdater? _animator = null!;
         public const float ANIM_TIME = 0.35f;
 
