@@ -62,14 +62,14 @@ namespace ImageFactory.UI
         protected float XScale
         {
             get => _imageEditorManager.Size.x;
-            set { _imageEditorManager.Size = new Vector2(value, _imageEditorManager.Size.y); NotifyPropertyChanged(); }
+            set { _imageEditorManager.Size = new Vector2(value, _imageEditorManager.Size.y); NotifyPropertyChanged(); _floatingScreen.handle.transform.localScale = Vector3.one / 5f * _imageEditorManager.Size.x; }
         }
 
         [UIValue("scale-y")]
         protected float YScale
         {
             get => _imageEditorManager.Size.y;
-            set { _imageEditorManager.Size = new Vector2(_imageEditorManager.Size.x, value); NotifyPropertyChanged(); }
+            set { _imageEditorManager.Size = new Vector2(_imageEditorManager.Size.x, value); NotifyPropertyChanged(); _floatingScreen.handle.transform.localScale = Vector3.one / 5f * _imageEditorManager.Size.x; }
         }
 
         [Inject]
@@ -108,7 +108,7 @@ namespace ImageFactory.UI
             // child of the handle screen.
             _floatingScreen.gameObject.SetActive(true);
             _floatingScreen.SetRootViewController(_dummyView, AnimationType.None);
-            _floatingScreen.handle.transform.localScale = Vector3.one / 5f;
+            _floatingScreen.handle.transform.localScale = Vector3.one / 5f * saveData.Size;
             _floatingScreen.handle.gameObject.transform.localPosition = Vector3.zero;
             Transform tForm = _imageEditorManager.Present(image, saveData, clone =>
             {
