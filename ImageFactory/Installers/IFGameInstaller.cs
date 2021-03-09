@@ -18,7 +18,8 @@ namespace ImageFactory.Installers
         {
             if (!_config.IgnoreTextAndHUDs && _sceneSetupData.playerSpecificSettings.noTextsAndHuds)
                 return;
-
+            if (!Container.HasBinding<MultiplayerLevelSceneSetupData>())
+                Container.BindInterfacesTo<PausePresenter>().AsSingle();
             Container.BindInterfacesTo<FullComboPresenter>().AsSingle();
             Container.BindInterfacesTo<LastNotePresenter>().AsSingle();
             Container.BindInterfacesTo<PercentPresenter>().AsSingle();

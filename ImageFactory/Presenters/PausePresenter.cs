@@ -8,26 +8,26 @@ using Zenject;
 
 namespace ImageFactory.Presenters
 {
-    internal class FullComboPresenter : IInitializable, IDisposable
+    internal class PausePresenter : IInitializable, IDisposable
     {
         private readonly Config _config;
+        private readonly IGamePause _gamePause;
         private readonly ImageManager _imageManager;
-        private readonly ScoreController _scoreController;
         private readonly List<SaveImage> _savedImages = new List<SaveImage>();
         private readonly Dictionary<SaveImage, IFSprite> _activeSprites = new Dictionary<SaveImage, IFSprite>();
 
-        public const string FULLCOMBO_ID = "Full Combo";
+        public const string PAUSE_ID = "In Pause Menu";
 
-        public FullComboPresenter(Config config, ImageManager imageManager, ScoreController scoreController)
+        public PausePresenter(Config config, IGamePause gamePause, ImageManager imageManager)
         {
             _config = config;
+            _gamePause = gamePause;
             _imageManager = imageManager;
-            _scoreController = scoreController;
         }
 
         public async void Initialize()
         {
-            var saves = _config.SaveData.Where(sd => sd.Enabled && sd.Presentation.PresentationID == FULLCOMBO_ID);
+            var saves = _config.SaveData.Where(sd => sd.Enabled && sd.Presentation.PresentationID == PAUSE_ID);
             foreach (var save in saves)
             {
                 IFImage.Metadata? metadata = _imageManager.GetMetadata(save);
@@ -38,26 +38,41 @@ namespace ImageFactory.Presenters
                     {
                         var saveData = new SaveImage(image, save);
                         _savedImages.Add(saveData);
-                        var sprite = _imageManager.Spawn(save);
-                        _activeSprites.Add(saveData, sprite);
-                        sprite.Image = image;
                     }
                 }
             }
-            _scoreController.comboBreakingEventHappenedEvent += ComboDropped;
+            _gamePause.didPauseEvent += GamePause_didPauseEvent;
+            _gamePause.willResumeEvent += GamePause_willResumeEvent;
         }
 
-        private void ComboDropped()
+        private void GamePause_didPauseEvent()
         {
-            foreach (var sprite in _activeSprites)
-                _imageManager.Despawn(sprite.Value);
+            foreach (var image in _savedImages)
+            {
+                var sprite = _imageManager.Spawn(image.SaveData);
+                _activeSprites.Add(image, sprite);
+                sprite.Image = image.Image;
+            }
+        }
+
+        private void GamePause_willResumeEvent()
+        {
+            foreach (var image in _savedImages)
+            {
+                if (_activeSprites.TryGetValue(image, out IFSprite sprite))
+                {
+                    _activeSprites.Remove(image);
+                    _imageManager.Despawn(sprite);
+                }
+            }
         }
 
         public void Dispose()
         {
             foreach (var sprite in _activeSprites)
                 _imageManager.Despawn(sprite.Value);
-            _scoreController.comboBreakingEventHappenedEvent -= ComboDropped;
+            _gamePause.willResumeEvent -= GamePause_willResumeEvent;
+            _gamePause.didPauseEvent -= GamePause_didPauseEvent;
         }
 
         private class SaveImage

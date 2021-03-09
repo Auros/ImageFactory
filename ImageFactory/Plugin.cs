@@ -32,7 +32,7 @@ namespace ImageFactory
             zenjector.OnApp<IFCoreInstaller>();
             zenjector.OnApp<IFImageInstaller>();
             zenjector.OnMenu<IFMenuInstaller>();
-            zenjector.OnGame<IFGameInstaller>();
+            zenjector.OnGame<IFGameInstaller>(false).ShortCircuitForTutorial();
         }
 
         [OnEnable]
