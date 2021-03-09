@@ -38,7 +38,7 @@ namespace ImageFactory.Components
         {
             get
             {
-                if (_image != null && _image.animationData != null)
+                if (_image != null && _image.animationData != null && _spriteRenderer != null)
                 {
                     var pos = transform.position + new Vector3(_spriteRenderer.bounds.extents.x, _spriteRenderer.bounds.extents.y, 0);
                     return pos;
@@ -47,12 +47,12 @@ namespace ImageFactory.Components
             }
             set
             {
-                if (_image != null && _image.animationData != null)
+                if (_image != null && _image.animationData != null && _spriteRenderer != null)
                 {
                     var pos = value - new Vector3(_spriteRenderer.bounds.extents.x, _spriteRenderer.bounds.extents.y, 0);
                     transform.position = pos;
                 }
-                else
+                else if (transform != null)
                     transform.position = value;
             }
         }
@@ -113,6 +113,12 @@ namespace ImageFactory.Components
         {
             _spriteRenderer.material = BeatSaberMarkupLanguage.Utilities.ImageResources.NoGlowMat;
             _spriteRenderer.material.shader = Utilities.ImageShader;
+        }
+
+        protected void OnDisable()
+        {
+            if (_tweeningManager != null)
+                _tweeningManager.KillAllTweens(this);
         }
 
         public void AnimateIn()

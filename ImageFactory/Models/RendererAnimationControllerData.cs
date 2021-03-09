@@ -48,7 +48,7 @@ namespace ImageFactory.Models
             {
                 foreach (Image image in activeImages)
                 {
-                    if (image.isActiveAndEnabled)
+                    if (image != null && image.isActiveAndEnabled)
                         image.sprite = sprites[uvIndex];
                 }
             }
