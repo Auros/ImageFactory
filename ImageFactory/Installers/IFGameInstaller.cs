@@ -19,6 +19,7 @@ namespace ImageFactory.Installers
             if (!_config.IgnoreTextAndHUDs && _sceneSetupData.playerSpecificSettings.noTextsAndHuds)
                 return;
 
+            Container.BindInterfacesTo<FullComboPresenter>().AsSingle();
             Container.BindInterfacesTo<LastNotePresenter>().AsSingle();
             Container.BindInterfacesTo<PercentPresenter>().AsSingle();
             Container.BindInterfacesTo<ComboPresenter>().AsSingle();

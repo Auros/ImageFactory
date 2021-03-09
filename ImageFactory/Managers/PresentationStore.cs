@@ -31,6 +31,7 @@ namespace ImageFactory.Managers
                 new Value(ComboPresenter.COMBO_INCREMENT, true, new ValueConstructor("On Every X Combo", 100, xcast)),
                 new Value(ComboPresenter.COMBO_HOLD, false, new ValueConstructor("When", "Above", new List<object> { "Below", "Above" }), new ValueConstructor("Combo", 100, xcast)),
                 new Value(ComboPresenter.COMBO_DROP, true),
+                new Value(FullComboPresenter.FULLCOMBO_ID, false),
                 new Value(LastNotePresenter.LASTNOTE_ID, true)
             };
         }
