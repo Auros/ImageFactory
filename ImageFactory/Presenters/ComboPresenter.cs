@@ -22,6 +22,7 @@ namespace ImageFactory.Presenters
         public const string COMBO_ID = "Combo";
         public const string COMBO_INCREMENT = "Combo Increment";
         public const string COMBO_DROP = "Combo Drop";
+        public const string COMBO_HOLD = "Combo Hold";
 
         public ComboPresenter(Config config, SiraLog siraLog, ImageManager imageManager, ScoreController scoreController)
         {
@@ -43,12 +44,24 @@ namespace ImageFactory.Presenters
                     if (image != null)
                     {
                         bool didParse = false;
+                        Hold? holdType = null;
                         bool isDrop = false;
                         bool isMod = false;
                         int combo = 0;
 
                         if (save.Presentation.PresentationID == COMBO_DROP)
                             isDrop = true;
+                        else if (save.Presentation.PresentationID == COMBO_HOLD)
+                        {
+                            string[] split = save.Presentation.Value.Split('|');
+                            if (split.Length != 2)
+                                continue;
+                            if (Enum.TryParse(split[0], out Hold holder) && int.TryParse(split[1], out combo))
+                            {
+                                holdType = holder;
+                                didParse = true;
+                            }
+                        }
                         else if (int.TryParse(save.Presentation.Value, out combo))
                         {
                             // Putting my foot down. Infinite combo images... are just dumb.
@@ -63,7 +76,7 @@ namespace ImageFactory.Presenters
 
                         if (isDrop || didParse)
                         {
-                            var saveImage = new SaveImage(image, save, combo, isDrop, isMod);
+                            var saveImage = new SaveImage(image, save, combo, isDrop, isMod, holdType);
                             _savedImages.Add(saveImage);
                         }
                     }
@@ -71,6 +84,7 @@ namespace ImageFactory.Presenters
             }
             _scoreController.comboDidChangeEvent += ComboChanged;
             _scoreController.comboBreakingEventHappenedEvent += ComboDropped;
+            ComboChanged(0);
         }
 
         private void ComboChanged(int newCombo)
@@ -80,6 +94,12 @@ namespace ImageFactory.Presenters
                 if (image.ForDrop)
                     continue;
 
+                if (image.HoldType.HasValue && ((image.HoldType.Value == Hold.Below && newCombo > image.Combo) || (image.HoldType.Value == Hold.Above && image.Combo > newCombo)))
+                {
+                    _ = Despawn(image, true);
+                    continue;
+                }    
+
                 // 0 % anything is zero, will incorrectly trip off image mods.
                 if (newCombo == 0)
                     continue;
@@ -87,12 +107,14 @@ namespace ImageFactory.Presenters
                 bool shouldPresent;
                 if (image.Mod)
                     shouldPresent = newCombo % image.Combo == 0;
+                else if (image.HoldType != null)
+                    shouldPresent = image.HoldType.Value == Hold.Below ? (image.Combo > newCombo) : (image.Combo < newCombo);
                 else
                     shouldPresent = newCombo == image.Combo;
 
                 if (shouldPresent)
                 {
-                    Spawn(image);
+                    Spawn(image, !image.HoldType.HasValue);
                 }
             }
         }
@@ -108,20 +130,24 @@ namespace ImageFactory.Presenters
             }
         }
 
-        private void Spawn(SaveImage image)
+        private void Spawn(SaveImage image, bool autoDepspawn = true)
         {
             if (_activeSprites.ContainsKey(image))
                 return;
             var sprite = _imageManager.Spawn(image.SaveData);
             _activeSprites.Add(image, sprite);
             sprite.Image = image.Image;
-            _ = Despawn(image);
+            if (autoDepspawn)
+                _ = Despawn(image);
         }
 
-        private async Task Despawn(SaveImage image)
+        private async Task Despawn(SaveImage image, bool immediately = false)
         {
-            int timeInMS = (int)(image.SaveData.Presentation.Duration * 1000f);
-            await SiraUtil.Utilities.AwaitSleep(timeInMS);
+            if (!immediately)
+            {
+                int timeInMS = (int)(image.SaveData.Presentation.Duration * 1000f);
+                await SiraUtil.Utilities.AwaitSleep(timeInMS);
+            }
             if (_activeSprites.TryGetValue(image, out IFSprite sprite))
             {
                 _activeSprites.Remove(image);
@@ -143,16 +169,24 @@ namespace ImageFactory.Presenters
             public int Combo { get; }
             public bool ForDrop { get; }
             public IFImage Image { get; }
+            public Hold? HoldType { get; }
             public IFSaveData SaveData { get; }
         
-            public SaveImage(IFImage image, IFSaveData saveData, int combo, bool forDrop, bool mod = false)
+            public SaveImage(IFImage image, IFSaveData saveData, int combo, bool forDrop, bool mod = false, Hold? hold = null)
             {
                 Mod = mod;
                 Image = image;
                 Combo = combo;
+                HoldType = hold;
                 ForDrop = forDrop;
                 SaveData = saveData;
             }
+        }
+
+        private enum Hold
+        {
+            Below,
+            Above
         }
     }
 }
