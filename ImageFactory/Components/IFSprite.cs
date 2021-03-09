@@ -1,4 +1,5 @@
 ﻿using ImageFactory.Models;
+using System.Threading.Tasks;
 using Tweening;
 using UnityEngine;
 using Zenject;
@@ -114,6 +115,12 @@ namespace ImageFactory.Components
             _spriteRenderer.material = BeatSaberMarkupLanguage.Utilities.ImageResources.NoGlowMat;
             _spriteRenderer.material.shader = Utilities.ImageShader;
         }
+        
+        protected void OnEnable()
+        {
+            if (_spriteRenderer != null)
+                _spriteRenderer.enabled = true;
+        }
 
         protected void OnDisable()
         {
@@ -148,10 +155,17 @@ namespace ImageFactory.Components
                 Size = new Vector2(lockSize.x, val);
             }, ANIM_TIME, EaseType.OutCubic)
             {
-                onCompleted = delegate () { Size = lockSize;  },
-                onKilled = delegate () { Size = lockSize; }
+                onCompleted = delegate () { _ = LazyUpdater(lockSize); },
+                onKilled = delegate () { _ = LazyUpdater(lockSize); }
             };
             _tweeningManager.AddTween(tween, this);
+        }
+
+        private async Task LazyUpdater(Vector2 lockSize)
+        {
+            _spriteRenderer.enabled = false;
+            await SiraUtil.Utilities.AwaitSleep(0);
+            Size = lockSize;
         }
 
         public class Pool : MonoMemoryPool<IFSprite> { /*Initialize Pool Type*/ }

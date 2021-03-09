@@ -43,10 +43,11 @@ namespace ImageFactory.Presenters
             var saves = _config.SaveData.Where(sd => sd.Enabled && sd.Presentation.PresentationID == RESULTS_ID);
             foreach (var save in saves)
             {
-                var id = save.Presentation.PresentationID;
+                var id = save.Presentation.Value;
                 var resultsView = _resultsViewController;
                 var results = Results(ref resultsView);
-                if ((id == PASSED_ID && results.levelEndStateType != LevelCompletionResults.LevelEndStateType.Cleared) || (id == FAILED_ID && results.levelEndStateType == LevelCompletionResults.LevelEndStateType.Failed))
+
+                if ((id == PASSED_ID && results.levelEndStateType != LevelCompletionResults.LevelEndStateType.Cleared) || (id == FAILED_ID && results.levelEndStateType != LevelCompletionResults.LevelEndStateType.Failed))
                     continue;
 
                 IFImage.Metadata? metadata = _imageManager.GetMetadata(save);
