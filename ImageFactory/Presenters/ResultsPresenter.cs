@@ -46,7 +46,7 @@ namespace ImageFactory.Presenters
                 var id = save.Presentation.PresentationID;
                 var resultsView = _resultsViewController;
                 var results = Results(ref resultsView);
-                if (id == PASSED_ID && results.levelEndStateType != LevelCompletionResults.LevelEndStateType.Cleared || id == FAILED_ID && results.levelEndStateType == LevelCompletionResults.LevelEndStateType.Failed)
+                if ((id == PASSED_ID && results.levelEndStateType != LevelCompletionResults.LevelEndStateType.Cleared) || (id == FAILED_ID && results.levelEndStateType == LevelCompletionResults.LevelEndStateType.Failed))
                     continue;
 
                 IFImage.Metadata? metadata = _imageManager.GetMetadata(save);

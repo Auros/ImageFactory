@@ -80,6 +80,10 @@ namespace ImageFactory.Presenters
                 if (image.ForDrop)
                     continue;
 
+                // 0 % anything is zero, will incorrectly trip off image mods.
+                if (newCombo == 0)
+                    continue;
+
                 bool shouldPresent;
                 if (image.Mod)
                     shouldPresent = newCombo % image.Combo == 0;
