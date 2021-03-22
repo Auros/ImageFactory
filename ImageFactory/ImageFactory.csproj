@@ -42,6 +42,7 @@
       <None Remove="Resources\pixel.png" />
       <None Remove="Resources\reset.png" />
       <None Remove="Resources\settings.png" />
+      <None Remove="Resources\sprite.assetbundle" />
       <None Remove="Views\edit-image-view.bsml" />
       <None Remove="Views\info-view.bsml" />
       <None Remove="Views\new-image-view.bsml" />
@@ -62,7 +63,7 @@
           <Private>False</Private>
         </Reference>
         <Reference Include="HMRendering">
-          <HintPath>$(BeatSaberDir)\\Beat Saber_Data\Managed\HMRendering.dll</HintPath>
+          <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\HMRendering.dll</HintPath>
           <Private>False</Private>
         </Reference>
         <Reference Include="MediaLoader">
@@ -70,7 +71,7 @@
           <Private>False</Private>
         </Reference>
         <Reference Include="Rendering">
-          <HintPath>$(BeatSaberDir)\\Beat Saber_Data\Managed\Rendering.dll</HintPath>
+          <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Rendering.dll</HintPath>
           <Private>False</Private>
         </Reference>
         <Reference Include="SemVer">
@@ -88,6 +89,10 @@
         <Reference Include="Unity.TextMeshPro">
             <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Unity.TextMeshPro.dll</HintPath>
             <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.AssetBundleModule">
+          <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+          <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.AudioModule">
           <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
@@ -150,6 +155,7 @@
         <EmbeddedResource Include="Resources\pixel.png" />
         <EmbeddedResource Include="Resources\reset.png" />
         <EmbeddedResource Include="Resources\settings.png" />
+        <EmbeddedResource Include="Resources\sprite.assetbundle" />
         <EmbeddedResource Include="Views\edit-image-view.bsml" />
         <EmbeddedResource Include="Views\info-view.bsml" />
         <EmbeddedResource Include="Views\new-image-view.bsml" />

@@ -70,7 +70,7 @@ namespace ImageFactory.Presenters
         public void Dispose()
         {
             foreach (var sprite in _activeSprites)
-                _imageManager.Despawn(sprite.Value);
+                _imageManager.Despawn(sprite.Value, true);
             _gamePause.willResumeEvent -= GamePause_willResumeEvent;
             _gamePause.didPauseEvent -= GamePause_didPauseEvent;
         }

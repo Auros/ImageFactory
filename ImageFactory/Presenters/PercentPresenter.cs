@@ -134,7 +134,7 @@ namespace ImageFactory.Presenters
         public void Dispose()
         {
             foreach (var sprite in _activeSprites)
-                _imageManager.Despawn(sprite.Value);
+                _imageManager.Despawn(sprite.Value, true);
             _relativeScoreAndImmediateRankCounter.relativeScoreOrImmediateRankDidChangeEvent -= RelativeScoreAndImmediateRankCounter_relativeScoreOrImmediateRankDidChangeEvent;
         }
 

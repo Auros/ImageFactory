@@ -1,4 +1,5 @@
-﻿using ImageFactory.Models;
+﻿using ImageFactory.Managers;
+using ImageFactory.Models;
 using System.Threading.Tasks;
 using Tweening;
 using UnityEngine;
@@ -9,10 +10,11 @@ namespace ImageFactory.Components
     internal class IFSprite : MonoBehaviour
     {
         private IFImage? _image;
+        public const float ANIM_TIME = 0.35f;
+        private RendererAnimationStateUpdater? _animator = null!;
         [SerializeField] private SpriteRenderer _spriteRenderer = null!;
         [Inject] private readonly TweeningManager _tweeningManager = null!;
-        private RendererAnimationStateUpdater? _animator = null!;
-        public const float ANIM_TIME = 0.35f;
+        [Inject] private readonly ResourceLoader _resourceLoader = null!;
 
         // If we're updating the size of an animated image, we need to recalculate its position extents to remain centered.
         public Vector2 Size
@@ -110,19 +112,28 @@ namespace ImageFactory.Components
             _spriteRenderer = renderer;
         }
 
-        protected void Start()
+        protected async void Start()
         {
-            _spriteRenderer.material = BeatSaberMarkupLanguage.Utilities.ImageResources.NoGlowMat;
-            _spriteRenderer.material.shader = Utilities.ImageShader;
+            _spriteRenderer.material = await _resourceLoader.LoadSpriteMaterial();
         }
         
         protected void OnEnable()
         {
             if (_spriteRenderer != null)
+            {
+                if (_tweeningManager != null)
+                    _tweeningManager.KillAllTweens(this);
                 _spriteRenderer.enabled = true;
+            }
         }
 
         protected void OnDisable()
+        {
+            if (_tweeningManager != null)
+                _tweeningManager.KillAllTweens(this);
+        }
+
+        public void KillAllTweens()
         {
             if (_tweeningManager != null)
                 _tweeningManager.KillAllTweens(this);

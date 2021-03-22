@@ -161,10 +161,10 @@ namespace ImageFactory.UI
 
             _helpSubIcon = new ClickableSubIcon(
                 "Help and FAQ",
-                "ImageFactory allows you to place custom images throughout your game. Everything has been designed to be easy for the user to use and customize. To learn more about how to use this mod, you can start the <color=#dbb716>tutorial</color>.",
-                "<color=#dbb716>Start Tutorial</color>",
+                "ImageFactory allows you to place custom images throughout your game. Everything has been designed to be easy for the user to use and customize. To learn more about how to use this mod, you can watch this video showcasing how to use it.",
+                "<color=#ff3838>Open Youtube</color>",
                 _helpImage.sprite,
-                () => { }); // TODO: Start the tutorial
+                () => { Application.OpenURL("https://youtu.be/8WZ-Jvg-OOo"); });
 
             _githubSubIcon = new ClickableSubIcon(
                 "Github",

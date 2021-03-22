@@ -12,24 +12,27 @@ namespace ImageFactory.Managers
     {
         private readonly List<IFImage> _loadedImages;
         private readonly MetadataStore _metadataStore;
-        private readonly MonoMemoryPoolContainer<IFSprite> _spritePool;
+        private readonly MemoryPoolContainer<IFSprite> _spritePool;
+        private readonly CachedMediaAsyncLoader _cachedMediaAsyncLoader;
         private readonly IImageFactorySpriteLoader _imageFactorySpriteLoader;
         private readonly List<IFSprite> _recentlyDeanimated = new List<IFSprite>();
 
         public event EventHandler<ImageUpdateArgs>? ImageUpdated;
 
-        public ImageManager(MetadataStore metadataStore, IFSprite.Pool spritePool, IImageFactorySpriteLoader imageFactorySpriteLoader)
+        public ImageManager(MetadataStore metadataStore, IFSprite.Pool spritePool, IImageFactorySpriteLoader imageFactorySpriteLoader, CachedMediaAsyncLoader cachedMediaAsyncLoader)
         {
             _metadataStore = metadataStore;
             _loadedImages = new List<IFImage>();
+            _cachedMediaAsyncLoader = cachedMediaAsyncLoader;
             _imageFactorySpriteLoader = imageFactorySpriteLoader;
-            _spritePool = new MonoMemoryPoolContainer<IFSprite>(spritePool);
+            _spritePool = new MemoryPoolContainer<IFSprite>(spritePool);
         }
 
         public IFSprite Spawn(IFSaveData data)
         {
             var sprite = _spritePool.Spawn();
-            sprite.transform.SetParent(null);
+            sprite.gameObject.transform.SetParent(_cachedMediaAsyncLoader.transform);
+            sprite.gameObject.transform.SetParent(null);
             sprite.Position = data.Position;
             sprite.Rotation = data.Rotation;
             sprite.Size = data.Size;
@@ -37,15 +40,22 @@ namespace ImageFactory.Managers
             return sprite;
         }
 
-        public void Despawn(IFSprite sprite)
+        public void Despawn(IFSprite sprite, bool immediately = false)
         {
-            _ = DespawnInternal(sprite);
+            _ = DespawnInternal(sprite, immediately);
         }
 
-        private async Task DespawnInternal(IFSprite sprite)
+        private async Task DespawnInternal(IFSprite sprite, bool immediately = false)
         {
-            sprite.AnimateOut();
-            await SiraUtil.Utilities.AwaitSleep((int)(IFSprite.ANIM_TIME * 1000f));
+            if (!immediately)
+            {
+                sprite.AnimateOut();
+                await SiraUtil.Utilities.AwaitSleep((int)(IFSprite.ANIM_TIME * 1000f));
+            }
+            // Pulls the sprite back into the root scene so it doesn't get destroyed if it's current scene is being destroyed.
+            sprite.gameObject.transform.SetParent(_cachedMediaAsyncLoader.transform);
+            sprite.gameObject.transform.SetParent(null);
+            sprite.KillAllTweens();
             sprite.Image = null;
             sprite.gameObject.SetActive(false);
             _spritePool.Despawn(sprite);

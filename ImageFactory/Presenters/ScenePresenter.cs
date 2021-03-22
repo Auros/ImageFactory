@@ -16,6 +16,7 @@ namespace ImageFactory.Presenters
         private readonly Config _config;
         private readonly SiraLog _siraLog;
         private readonly ImageManager _imageManager;
+        private readonly PlayerDataModel _playerDataModel;
 
         private readonly List<SaveSprite> _gameSprites;
         private readonly List<SaveSprite> _menuSprites;
@@ -25,12 +26,12 @@ namespace ImageFactory.Presenters
         public const string MENU_ID = "In Menu";
         public const string EVERYWHERE_ID = "Everywhere";
 
-
-        public ScenePresenter(SiraLog siraLog, Config config, ImageManager imageManager)
+        public ScenePresenter(SiraLog siraLog, Config config, ImageManager imageManager, PlayerDataModel playerDataModel)
         {
             _config = config;
             _siraLog = siraLog;
             _imageManager = imageManager;
+            _playerDataModel = playerDataModel;
 
             _gameSprites = new List<SaveSprite>();
             _menuSprites = new List<SaveSprite>();
@@ -71,7 +72,7 @@ namespace ImageFactory.Presenters
                 _globalSprites.AddRange(await LoadSprites(EVERYWHERE_ID));
                 _menuSprites.AddRange(await LoadSprites(MENU_ID));
             }
-            if (scene.name == "GameCore")
+            if (scene.name == "GameCore" && !(!_config.IgnoreTextAndHUDs && _playerDataModel.playerData.playerSpecificSettings.noTextsAndHuds))
             {
                 _gameSprites.AddRange(await LoadSprites(GAME_ID));
             }
@@ -181,7 +182,6 @@ namespace ImageFactory.Presenters
 
         private void SpawnThenAddSprite(IFSaveData save, IFImage image, List<SaveSprite> collection)
         {
-            _siraLog.Logger.Notice($"Spawning {save.Name}");
             var sprite = _imageManager.Spawn(save);
             sprite.Image = image;
             collection.Add(new SaveSprite(sprite, save));

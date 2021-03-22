@@ -2,6 +2,8 @@
 using BeatSaberMarkupLanguage;
 using Zenject;
 using ImageFactory.Models;
+using UnityEngine;
+using System;
 
 namespace ImageFactory.UI
 {
@@ -39,13 +41,19 @@ namespace ImageFactory.UI
 
                 // Upon activating for the first time, let's provide our initial view controllers for this flow coordinator
                 // to use. The ScreenSystem needs at a main screen and will break if there is none after activating.
-                ProvideInitialViewControllers(_infoView, _newImageView, _savedImageView);
+
+                if (_config.Enabled)
+                    ProvideInitialViewControllers(_infoView, _newImageView, _savedImageView);
+                else
+                    ProvideInitialViewControllers(_infoView);
             }
             _savedImageView.EditImageRequested += SavedImageView_EditImageRequested;
             _newImageView.NewImageRequested += NewImageView_NewImageRequested;
             _editImageView.Cancelled += DismissEditView;
             _editImageView.Saved += DismissEditView;
             _savedImageView.ShouldRefresh = true;
+
+            //StartTutorial();
         }
 
         private void DismissEditView()
@@ -100,5 +108,7 @@ namespace ImageFactory.UI
             _mainFlowCoordinator.DismissFlowCoordinator(this); // BSML Extension
             _savedImageView.ShouldRefresh = false;
         }
+
+        private Quaternion EulY(float euly) => Quaternion.Euler(new Vector3(0f, euly, 0f));
     }
 }

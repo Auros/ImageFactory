@@ -1,5 +1,4 @@
-﻿using BeatSaberMarkupLanguage.Animations;
-using ImageFactory.Interfaces;
+﻿using ImageFactory.Interfaces;
 using ImageFactory.Models;
 using SiraUtil.Tools;
 using UnityEngine;
@@ -37,6 +36,9 @@ namespace ImageFactory.Managers
 
         public async Task<IFImage?> LoadAsync(IFImage.Metadata metadata, IAnimationStateUpdater? animationStateUpdater = null)
         {
+            if (metadata.file == null)
+                return null;
+
             string filePath = metadata.file.FullName;
             if (_imageCache.TryGetValue(filePath, out IFImage? image))
             {

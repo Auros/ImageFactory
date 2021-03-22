@@ -8,7 +8,6 @@ namespace ImageFactory.Installers
     {
         public override void InstallBindings()
         {
-            Container.BindInterfacesAndSelfTo<ImageManager>().AsSingle();
             Container.BindInterfacesTo<ScenePresenter>().AsSingle();
         }
     }

@@ -69,6 +69,10 @@ namespace ImageFactory.UI
                 var val = _presentationOptions.Cast<PresentationStore.Value>().FirstOrDefault(p => p.ID == LastData.PresentationID);
                 if (val != null) Value = val;
             }
+            else
+            {
+                Value = _store.Values().FirstOrDefault();
+            }
         }
 
         public void Reset()
@@ -135,9 +139,6 @@ namespace ImageFactory.UI
             {
                 _presentationOptions = _store.Values().Cast<object>().ToList();
             }
-
-            foreach (Transform pres in _presentationList.tableView.contentTransform)
-                UnityEngine.Object.Destroy(pres.gameObject);
 
             _presentationList.data.AddRange(_activeValue.Constructors.Select(c => new InternalHost(c)));
             if (_activeValue.HasDuration)

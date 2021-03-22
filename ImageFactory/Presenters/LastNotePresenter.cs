@@ -66,7 +66,7 @@ namespace ImageFactory.Presenters
             CheckLastNote(noteController.noteData.time);
         }
 
-        private void BeatmapObjectManager_noteWasCutEvent(NoteController noteController, NoteCutInfo _)
+        private void BeatmapObjectManager_noteWasCutEvent(NoteController noteController, in NoteCutInfo _)
         {
             CheckLastNote(noteController.noteData.time);
         }
@@ -108,7 +108,7 @@ namespace ImageFactory.Presenters
         public void Dispose()
         {
             foreach (var sprite in _activeSprites)
-                _imageManager.Despawn(sprite.Value);
+                _imageManager.Despawn(sprite.Value, true);
             _beatmapObjectManager.noteWasCutEvent -= BeatmapObjectManager_noteWasCutEvent;
             _beatmapObjectManager.noteWasMissedEvent -= BeatmapObjectManager_noteWasMissedEvent;
         }

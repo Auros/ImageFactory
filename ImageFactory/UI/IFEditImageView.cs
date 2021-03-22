@@ -174,7 +174,7 @@ namespace ImageFactory.UI
         {
             _inputRoot.GetComponent<ContentSizeFitter>().enabled = false;
             _editorFieldView = _container.InstantiatePrefabForComponent<InputFieldView>(_templateFieldView.gameObject, _inputRoot.transform);
-            _editorFieldView.SetField("_keyboardPositionOffset", Vector3.zero);
+            _editorFieldView.SetField("_keyboardPositionOffset", new Vector3(0f, -20f, 0f));
             _editorFieldView.SetField("_textLengthLimit", 48);
             _editorFieldView.SetText(_imageEditorManager.Name);
         }

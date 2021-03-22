@@ -1,6 +1,5 @@
 ﻿using ImageFactory.Components;
 using ImageFactory.Managers;
-using System.Linq;
 using UnityEngine;
 using Zenject;
 
@@ -17,12 +16,13 @@ namespace ImageFactory.Installers
             // Binding all interfaces also allows us to use the Zenject kernal management interfaces like IInitializable,
             //   IDisposable, and ITickable.
 
+            Container.BindInterfacesAndSelfTo<ImageManager>().AsSingle();
             Container.BindInterfacesTo<CachedIFSpriteLoader>().AsSingle();
             Container.BindInterfacesTo<SimpleAnimationStateUpdater>().AsSingle();
+            Container.BindInterfacesAndSelfTo<ResourceLoader>().AsSingle();
             Container.BindInterfacesAndSelfTo<MetadataStore>().AsSingle();
             Container.Bind<DynamicCacheMediaLoader>().AsSingle();
             Container.Bind<PresentationStore>().AsSingle();
-
             Container.BindMemoryPool<IFSprite, IFSprite.Pool>().WithInitialSize(5).FromComponentInNewPrefab(ImageTemplate());
         }
 
@@ -31,6 +31,7 @@ namespace ImageFactory.Installers
             GameObject root = new GameObject("IF Image");
             IFSprite ifc = root.AddComponent<IFSprite>();
             SpriteRenderer renderer = root.AddComponent<SpriteRenderer>();
+
             ifc.Setup(renderer);
             root.gameObject.SetActive(false);
             return ifc;

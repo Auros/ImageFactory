@@ -27,12 +27,12 @@ namespace ImageFactory
                 Container.BindInstance(config).AsSingle();
                 Container.BindInstance(new UBinder<Plugin, PluginMetadata>(metadata));
             });
-            
+
             zenjector.OnMenu<IFUIInstaller>();
             zenjector.OnApp<IFCoreInstaller>();
-            zenjector.OnApp<IFImageInstaller>();
-            zenjector.OnMenu<IFMenuInstaller>();
-            zenjector.OnGame<IFGameInstaller>(false).ShortCircuitForTutorial();
+            zenjector.OnApp<IFImageInstaller>().When(() => { return config.Enabled; });
+            zenjector.OnMenu<IFMenuInstaller>().When(() => { return config.Enabled; });
+            zenjector.OnGame<IFGameInstaller>(false).ShortCircuitForTutorial().When(() => { return config.Enabled; }); ;
         }
 
         [OnEnable]
