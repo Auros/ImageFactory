@@ -4,7 +4,7 @@ Place and customize images throughout your game.
 # FAQ
 
 ### How Do I Add Images?
-You can either launch the game once to generate the folder or create it yourself.
+You can either launch the game once to generate the folder or create it yourself. Place images inside the folder!
 
 `Beat Saber/UserData/ImageFactory/Images/`
 
