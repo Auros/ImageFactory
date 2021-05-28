@@ -6,6 +6,7 @@ using HMUI;
 using ImageFactory.Managers;
 using ImageFactory.Models;
 using IPA.Utilities;
+using SiraUtil.Tools;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,6 +23,7 @@ namespace ImageFactory.UI
         public event Action? Saved;
 
         private Config _config = null!;
+        private SiraLog _siraLog = null!;
         private DiContainer _container = null!;
         private ViewController _dummyView = null!;
         private ImageManager _imageManager = null!;
@@ -74,9 +76,10 @@ namespace ImageFactory.UI
         }
 
         [Inject]
-        public void Construct(Config config, DiContainer container, ImageManager imageManager, ImageEditorManager imageEditorManager, PhysicsRaycasterWithCache cacheRaycaster, LevelSearchViewController levelSearchViewController)
+        public void Construct(Config config, SiraLog siraLog, DiContainer container, ImageManager imageManager, ImageEditorManager imageEditorManager, PhysicsRaycasterWithCache cacheRaycaster, LevelSearchViewController levelSearchViewController)
         {
             _config = config;
+            _siraLog = siraLog;
             _container = container;
             _imageManager = imageManager;
             _cacheRaycaster = cacheRaycaster;
@@ -85,19 +88,24 @@ namespace ImageFactory.UI
             _templateFieldView = levelSearchViewController.GetField<InputFieldView, LevelSearchViewController>("_searchTextInputFieldView");
         }
 
-        protected void Start()
+        private void CreateScreen()
         {
-            _floatingScreen = FloatingScreen.CreateFloatingScreen(new Vector2(10, 10f), true, Vector3.zero, Quaternion.identity, 0f, false);
-            _floatingScreen.GetComponent<VRGraphicRaycaster>().SetField("_physicsRaycaster", _cacheRaycaster);
-            _dummyView = BeatSaberUI.CreateViewController<ViewController>();
-            _floatingScreen.transform.localScale = Vector3.one;
-            _dummyView.name = "IF Editor DummyViewController";
-            _floatingScreen.name = "IF Editor Cube";
-            _floatingScreen.gameObject.SetActive(false);
+            if (_floatingScreen == null)
+            {
+                _siraLog.Info("Starting...");
+                _floatingScreen = FloatingScreen.CreateFloatingScreen(new Vector2(10, 10f), true, Vector3.zero, Quaternion.identity, 0f, false);
+                _floatingScreen.GetComponent<VRGraphicRaycaster>().SetField("_physicsRaycaster", _cacheRaycaster);
+                _dummyView = BeatSaberUI.CreateViewController<ViewController>();
+                _floatingScreen.transform.localScale = Vector3.one;
+                _dummyView.name = "IF Editor DummyViewController";
+                _floatingScreen.name = "IF Editor Cube";
+                _floatingScreen.gameObject.SetActive(false);
+            }
         }
 
         public void EnableEditing(IFImage image, IFSaveData? data = null)
         {
+            CreateScreen();
             _presentationHost.Reset();
             _imageManager.DeanimateAll();
             _presentationHost.LastData = data?.Presentation;
@@ -108,10 +116,14 @@ namespace ImageFactory.UI
             // Then, resize the handle accordingly, setup our editor sprite instance,
             // set the position of our handle TO the image and THEN make the sprite a
             // child of the handle screen.
+            _siraLog.Null(_floatingScreen);
+            _siraLog.Null(_floatingScreen.handle);
+            _siraLog.Null(_dummyView);
             _floatingScreen.gameObject.SetActive(true);
             _floatingScreen.SetRootViewController(_dummyView, AnimationType.None);
             _floatingScreen.handle.transform.localScale = Vector3.one / 5f * saveData.Size;
             _floatingScreen.handle.gameObject.transform.localPosition = Vector3.zero;
+            _siraLog.Info("7");
             Transform tForm = _imageEditorManager.Present(image, saveData, clone =>
             {
                 var val = _presentationHost.Export();
@@ -144,7 +156,6 @@ namespace ImageFactory.UI
             Enabled = Enabled;
             XScale = XScale;
             YScale = YScale;
-
             _presentationHost.Update();
         }
         private void NameFieldUpdated(InputFieldView field)

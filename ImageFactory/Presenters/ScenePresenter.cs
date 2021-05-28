@@ -53,12 +53,12 @@ namespace ImageFactory.Presenters
                     _imageManager.Despawn(gameSprite.Sprite);
                 _gameSprites.Clear();
             }
-            else if (oldScene.name == "MenuViewControllers")
+            else if (oldScene.name == "MainMenu")
             {
                 foreach (var menuSprite in _menuSprites)
                     menuSprite.Sprite.gameObject.SetActive(false);
             }
-            else if (newScene.name == "MenuViewControllers")
+            else if (newScene.name == "MainMenu")
             {
                 foreach (var menuSprite in _menuSprites)
                     menuSprite.Sprite.gameObject.SetActive(true);
@@ -67,7 +67,7 @@ namespace ImageFactory.Presenters
 
         private async void SceneManager_sceneLoaded(Scene scene, LoadSceneMode __)
         {
-            if (scene.name == "MenuCore")
+            if (scene.name == "MainMenu")
             {
                 _globalSprites.AddRange(await LoadSprites(EVERYWHERE_ID));
                 _menuSprites.AddRange(await LoadSprites(MENU_ID));
