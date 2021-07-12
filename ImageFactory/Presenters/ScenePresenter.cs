@@ -53,7 +53,7 @@ namespace ImageFactory.Presenters
                     _imageManager.Despawn(gameSprite.Sprite);
                 _gameSprites.Clear();
             }
-            else if (oldScene.name == "MainMenu")
+            if (oldScene.name == "MainMenu")
             {
                 foreach (var menuSprite in _menuSprites)
                     menuSprite.Sprite.gameObject.SetActive(false);
