@@ -17,7 +17,7 @@ namespace ImageFactory
         public Plugin(Conf conf, IPALogger logger, Zenjector zenjector, PluginMetadata metadata)
         {
             Config config = conf.Generated<Config>();
-            config.Version = metadata.Version;
+            config.Version = metadata.HVersion;
 
             // Bind our logger and binder separately. It just makes things easier instead
             // of having to pass it as a parameter into our core installer.

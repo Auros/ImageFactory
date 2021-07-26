@@ -5,7 +5,7 @@ using HMUI;
 using ImageFactory.Managers;
 using IPA.Loader;
 using IPA.Utilities;
-using SemVer;
+using Hive.Versioning;
 using SiraUtil.Zenject;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,7 +30,7 @@ namespace ImageFactory.UI
         public void Construct(Config config, DynamicCacheMediaLoader dynamicCacheMediaLoader, MenuTransitionsHelper menuTransitionsHelper, UBinder<Plugin, PluginMetadata> metadataBinder)
         {
             _config = config;
-            _version = metadataBinder.Value.Version;
+            _version = metadataBinder.Value.HVersion;
             _spriteAsyncLoader = dynamicCacheMediaLoader;
             _menuTransitionsHelper = menuTransitionsHelper;
         }
