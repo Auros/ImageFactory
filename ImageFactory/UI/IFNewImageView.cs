@@ -30,7 +30,7 @@ namespace ImageFactory.UI
         protected ImageManager _imageManager = null!;
 
         [Inject]
-        protected void Construct(DiContainer container, ImageManager imageManager, MetadataStore metadataStore, TweeningManager tweeningManager)
+        protected void Construct(DiContainer container, ImageManager imageManager, MetadataStore metadataStore, TimeTweeningManager tweeningManager)
         {
             _selectImageModalHost = container.Instantiate<SelectImageModalHost>();
             _tweeningManager = tweeningManager;

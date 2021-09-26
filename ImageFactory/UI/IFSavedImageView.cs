@@ -33,7 +33,7 @@ namespace ImageFactory.UI
         protected Config _config = null!;
 
         [Inject]
-        protected void Construct(Config config, ImageManager imageManager, MetadataStore metadataStore, TweeningManager tweeningManager)
+        protected void Construct(Config config, ImageManager imageManager, MetadataStore metadataStore, TimeTweeningManager tweeningManager)
         {
             _tweeningManager = tweeningManager;
             _metadataStore = metadataStore;
