@@ -2,7 +2,6 @@
 using IPA;
 using IPA.Config.Stores;
 using IPA.Loader;
-using SiraUtil;
 using SiraUtil.Attributes;
 using SiraUtil.Zenject;
 using Conf = IPA.Config.Config;
@@ -10,7 +9,7 @@ using IPALogger = IPA.Logging.Logger;
 
 namespace ImageFactory
 {
-    [Plugin(RuntimeOptions.DynamicInit), Slog]
+    [Plugin(RuntimeOptions.DynamicInit), Slog, NoEnableDisable]
     public class Plugin
     {
         [Init]
@@ -18,33 +17,19 @@ namespace ImageFactory
         {
             Config config = conf.Generated<Config>();
             config.Version = metadata.HVersion;
-
-            // Bind our logger and binder separately. It just makes things easier instead
-            // of having to pass it as a parameter into our core installer.
-            zenjector.On<PCAppInit>().Pseudo(Container =>
+            zenjector.UseHttpService();
+            zenjector.UseLogger(logger);
+            zenjector.Install(Location.App, Container =>
             {
-                Container.BindLoggerAsSiraLogger(logger);
                 Container.BindInstance(config).AsSingle();
                 Container.BindInstance(new UBinder<Plugin, PluginMetadata>(metadata));
             });
 
-            zenjector.OnMenu<IFUIInstaller>();
-            zenjector.OnApp<IFCoreInstaller>();
-            zenjector.OnApp<IFImageInstaller>().When(() => { return config.Enabled; });
-            zenjector.OnMenu<IFMenuInstaller>().When(() => { return config.Enabled; });
-            zenjector.OnGame<IFGameInstaller>(false).ShortCircuitForTutorial().When(() => { return config.Enabled; }); ;
-        }
-
-        [OnEnable]
-        public void OnEnable()
-        {
-
-        }
-
-        [OnDisable]
-        public void OnDisable()
-        {
-
+            zenjector.Install<IFUIInstaller>(Location.Menu);
+            zenjector.Install<IFCoreInstaller>(Location.App);
+            zenjector.Install<IFImageInstaller>(Location.App);
+            zenjector.Install<IFMenuInstaller>(Location.Menu);
+            zenjector.Install<IFGameInstaller>(Location.Player);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using ImageFactory.Components;
 using ImageFactory.Managers;
 using ImageFactory.Models;
-using SiraUtil.Tools;
+using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;

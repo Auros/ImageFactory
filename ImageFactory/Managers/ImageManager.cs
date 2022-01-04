@@ -50,7 +50,7 @@ namespace ImageFactory.Managers
             if (!immediately)
             {
                 sprite.AnimateOut();
-                await SiraUtil.Utilities.AwaitSleep((int)(IFSprite.ANIM_TIME * 1000f));
+                await Task.Delay((int)(IFSprite.ANIM_TIME * 1000f));
             }
             // Pulls the sprite back into the root scene so it doesn't get destroyed if it's current scene is being destroyed.
             sprite.gameObject.transform.SetParent(_cachedMediaAsyncLoader.transform);

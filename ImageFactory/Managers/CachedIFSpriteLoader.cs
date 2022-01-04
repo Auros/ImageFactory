@@ -1,14 +1,13 @@
 ﻿using ImageFactory.Interfaces;
 using ImageFactory.Models;
-using SiraUtil.Tools;
-using UnityEngine;
-
+using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.IO;
+using UnityEngine;
 
 namespace ImageFactory.Managers
 {
@@ -63,7 +62,7 @@ namespace ImageFactory.Managers
                     // Separate system for loading gifs. Unfortunately we don't have the convenience of the CachedMediaAsyncLoader
 
                     Stopwatch watch = Stopwatch.StartNew();
-                    
+
                     // Load the file to a byte array
                     using FileStream imageFS = metadata.file.OpenRead();
                     using MemoryStream imageMS = new MemoryStream();

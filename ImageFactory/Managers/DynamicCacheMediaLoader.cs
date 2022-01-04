@@ -1,5 +1,6 @@
 ﻿using IPA.Loader;
 using SiraUtil;
+using SiraUtil.Web;
 using SiraUtil.Zenject;
 using System.Collections.Generic;
 using System.IO;
@@ -13,13 +14,13 @@ namespace ImageFactory.Managers
     internal class DynamicCacheMediaLoader : ISpriteAsyncLoader
     {
         private readonly Assembly _assembly;
-        private readonly WebClient _webClient;
+        private readonly IHttpService _httpService;
         private readonly Dictionary<string, Sprite> _cache = new Dictionary<string, Sprite>();
 
-        public DynamicCacheMediaLoader(WebClient webClient, UBinder<Plugin, PluginMetadata> metadataBinder)
+        public DynamicCacheMediaLoader(IHttpService httpService, UBinder<Plugin, PluginMetadata> metadataBinder)
         {
-            _webClient = webClient;
-             _assembly = metadataBinder.Value.Assembly;
+            _httpService = httpService;
+            _assembly = metadataBinder.Value.Assembly;
         }
 
         public async Task<Sprite> LoadSpriteAsync(string path, CancellationToken cancellationToken)
@@ -31,12 +32,12 @@ namespace ImageFactory.Managers
 
             if (path.StartsWith("http"))
             {
-                var response = await _webClient.GetAsync(path, cancellationToken);
+                var response = await _httpService.GetAsync(path, cancellationToken: cancellationToken);
 
-                if (!response.IsSuccessStatusCode)
+                if (!response.Successful)
                     return null!;
 
-                sprite = BeatSaberMarkupLanguage.Utilities.LoadSpriteRaw(response.ContentToBytes());
+                sprite = BeatSaberMarkupLanguage.Utilities.LoadSpriteRaw(await response.ReadAsByteArrayAsync());
             }
             else
             {

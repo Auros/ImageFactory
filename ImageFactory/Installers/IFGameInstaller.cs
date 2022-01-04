@@ -16,6 +16,8 @@ namespace ImageFactory.Installers
 
         public override void InstallBindings()
         {
+            if (!_config.Enabled)
+                return;
             if (!_config.IgnoreTextAndHUDs && _sceneSetupData.playerSpecificSettings.noTextsAndHuds)
                 return;
             if (!Container.HasBinding<MultiplayerLevelSceneSetupData>())

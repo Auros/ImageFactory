@@ -13,7 +13,7 @@ namespace ImageFactory.Components
         public const float ANIM_TIME = 0.35f;
         private RendererAnimationStateUpdater? _animator = null!;
         [SerializeField] private SpriteRenderer _spriteRenderer = null!;
-        [Inject] private readonly TweeningManager _tweeningManager = null!;
+        [Inject] private readonly TimeTweeningManager _tweeningManager = null!;
         [Inject] private readonly ResourceLoader _resourceLoader = null!;
 
         // If we're updating the size of an animated image, we need to recalculate its position extents to remain centered.
@@ -82,7 +82,7 @@ namespace ImageFactory.Components
                     }
                 }
                 else
-                { 
+                {
                     if (_image.metadata.animationType is null)
                     {
                         if (_animator != null)
@@ -116,7 +116,7 @@ namespace ImageFactory.Components
         {
             _spriteRenderer.material = await _resourceLoader.LoadSpriteMaterial();
         }
-        
+
         protected void OnEnable()
         {
             if (_spriteRenderer != null)
@@ -175,7 +175,7 @@ namespace ImageFactory.Components
         private async Task LazyUpdater(Vector2 lockSize)
         {
             _spriteRenderer.enabled = false;
-            await SiraUtil.Utilities.AwaitSleep(0);
+            await Task.Yield();
             Size = lockSize;
         }
 

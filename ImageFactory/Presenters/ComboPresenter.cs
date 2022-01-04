@@ -1,7 +1,7 @@
 ﻿using ImageFactory.Components;
 using ImageFactory.Managers;
 using ImageFactory.Models;
-using SiraUtil.Tools;
+using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,7 +98,7 @@ namespace ImageFactory.Presenters
                 {
                     _ = Despawn(image, true);
                     continue;
-                }    
+                }
 
                 // 0 % anything is zero, will incorrectly trip off image mods.
                 if (newCombo == 0)
@@ -146,7 +146,7 @@ namespace ImageFactory.Presenters
             if (!immediately)
             {
                 int timeInMS = (int)(image.SaveData.Presentation.Duration * 1000f);
-                await SiraUtil.Utilities.AwaitSleep(timeInMS);
+                await SiraUtil.Extras.Utilities.AwaitSleep(timeInMS);
             }
             if (_activeSprites.TryGetValue(image, out IFSprite sprite))
             {
@@ -171,7 +171,7 @@ namespace ImageFactory.Presenters
             public IFImage Image { get; }
             public Hold? HoldType { get; }
             public IFSaveData SaveData { get; }
-        
+
             public SaveImage(IFImage image, IFSaveData saveData, int combo, bool forDrop, bool mod = false, Hold? hold = null)
             {
                 Mod = mod;

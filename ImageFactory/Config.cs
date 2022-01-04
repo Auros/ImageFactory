@@ -11,7 +11,7 @@ namespace ImageFactory
 {
     internal class Config
     {
-        [NonNullable, UseConverter(typeof(HiveVersionConverter))]
+        [NonNullable, UseConverter(typeof(VersionConverter))]
         public virtual Hive.Versioning.Version Version { get; set; } = new Hive.Versioning.Version("0.0.0");
 
         public virtual bool Enabled { get; set; } = true;

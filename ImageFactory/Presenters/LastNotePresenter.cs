@@ -97,7 +97,7 @@ namespace ImageFactory.Presenters
         private async Task Despawn(SaveImage image)
         {
             int timeInMS = (int)(image.SaveData.Presentation.Duration * 1000f);
-            await SiraUtil.Utilities.AwaitSleep(timeInMS);
+            await Task.Delay(timeInMS);
             if (_activeSprites.TryGetValue(image, out IFSprite sprite))
             {
                 _activeSprites.Remove(image);

@@ -4,12 +4,14 @@ using Zenject;
 using ImageFactory.Models;
 using UnityEngine;
 using System;
+using SiraUtil.Logging;
 
 namespace ImageFactory.UI
 {
     internal class ImageFactoryFlowCoordinator : FlowCoordinator
     {
         private Config _config = null!;
+        private SiraLog _siraLog = null!;
         private IFInfoView _infoView = null!;
         private bool _initialEnabledValue = false;
         private IFNewImageView _newImageView = null!;
@@ -19,9 +21,10 @@ namespace ImageFactory.UI
         private MenuTransitionsHelper _menuTransitionsHelper = null!;
 
         [Inject]
-        public void Inject(Config config, IFInfoView infoView, IFNewImageView newImageView, IFEditImageView editImageView, IFSavedImageView savedImageView, MainFlowCoordinator mainFlowCoordinator, MenuTransitionsHelper menuTransitionsHelper)
+        public void Inject(Config config, SiraLog siraLog, IFInfoView infoView, IFNewImageView newImageView, IFEditImageView editImageView, IFSavedImageView savedImageView, MainFlowCoordinator mainFlowCoordinator, MenuTransitionsHelper menuTransitionsHelper)
         {
             _config = config;
+            _siraLog = siraLog;
             _infoView = infoView;
             _newImageView = newImageView;
             _editImageView = editImageView;

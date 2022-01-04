@@ -1,6 +1,5 @@
 ﻿using ImageFactory.Managers;
 using ImageFactory.UI;
-using SiraUtil;
 using Zenject;
 
 namespace ImageFactory.Installers
@@ -19,7 +18,7 @@ namespace ImageFactory.Installers
             Container.Bind<IFNewImageView>().FromNewComponentAsViewController().AsSingle();
             Container.Bind<IFEditImageView>().FromNewComponentAsViewController().AsSingle();
             Container.Bind<IFSavedImageView>().FromNewComponentAsViewController().AsSingle();
-            Container.Bind<ImageFactoryFlowCoordinator>().FromNewComponentOnNewGameObject(nameof(ImageFactoryFlowCoordinator)).AsSingle();
+            Container.Bind<ImageFactoryFlowCoordinator>().FromNewComponentOnNewGameObject().AsSingle();
         }
     }
 }

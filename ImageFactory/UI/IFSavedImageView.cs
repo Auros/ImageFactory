@@ -24,7 +24,7 @@ namespace ImageFactory.UI
 
         #region Injected Dependencies
 
-        protected TweeningManager _tweeningManager = null!;
+        protected TimeTweeningManager _tweeningManager = null!;
 
         protected MetadataStore _metadataStore = null!;
 
@@ -33,9 +33,9 @@ namespace ImageFactory.UI
         protected Config _config = null!;
 
         [Inject]
-        protected void Construct(Config config, ImageManager imageManager, MetadataStore metadataStore, TweeningManager tweeningManager)
+        protected void Construct(Config config, ImageManager imageManager, MetadataStore metadataStore, TimeTweeningManager TimeTweeningManager)
         {
-            _tweeningManager = tweeningManager;
+            _tweeningManager = TimeTweeningManager;
             _metadataStore = metadataStore;
             _imageManager = imageManager;
             _config = config;
@@ -66,7 +66,7 @@ namespace ImageFactory.UI
                 _loadingCanvas.alpha = val;
             }, animationSector, EaseType.InOutQuad), _loadingCanvas);
 
-            await SiraUtil.Utilities.AwaitSleep((int)(animationSector * 1000));
+            await Task.Delay((int)(animationSector * 1000));
             _loadingCanvas.gameObject.SetActive(false);
 
             _selectionCanvas.alpha = 0f;
@@ -157,7 +157,7 @@ namespace ImageFactory.UI
 
         protected override void OnDestroy()
         {
-             _imageManager.ImageUpdated -= ImageManager_ImageUpdated;
+            _imageManager.ImageUpdated -= ImageManager_ImageUpdated;
             base.OnDestroy();
         }
 

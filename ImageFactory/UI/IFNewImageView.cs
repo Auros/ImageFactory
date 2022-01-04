@@ -23,17 +23,17 @@ namespace ImageFactory.UI
 
         #region Injected Dependencies
 
-        protected TweeningManager _tweeningManager = null!;
+        protected TimeTweeningManager _tweeningManager = null!;
 
         protected MetadataStore _metadataStore = null!;
 
         protected ImageManager _imageManager = null!;
 
         [Inject]
-        protected void Construct(DiContainer container, ImageManager imageManager, MetadataStore metadataStore, TweeningManager tweeningManager)
+        protected void Construct(DiContainer container, ImageManager imageManager, MetadataStore metadataStore, TimeTweeningManager TimeTweeningManager)
         {
             _selectImageModalHost = container.Instantiate<SelectImageModalHost>();
-            _tweeningManager = tweeningManager;
+            _tweeningManager = TimeTweeningManager;
             _metadataStore = metadataStore;
             _imageManager = imageManager;
         }
@@ -62,7 +62,7 @@ namespace ImageFactory.UI
                 _loadingCanvas.alpha = val;
             }, animationSector, EaseType.InOutQuad), _loadingCanvas);
 
-            await SiraUtil.Utilities.AwaitSleep((int)(animationSector * 1000));
+            await Task.Delay((int)(animationSector * 1000));
             _loadingCanvas.gameObject.SetActive(false);
 
             _selectionCanvas.alpha = 0f;
@@ -90,7 +90,7 @@ namespace ImageFactory.UI
 
         [UIComponent("down-button")]
         protected readonly Button _downButton = null!;
-        
+
         public async Task LoadImages()
         {
             if (_didLoad)

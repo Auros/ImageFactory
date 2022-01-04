@@ -6,7 +6,7 @@ using HMUI;
 using ImageFactory.Managers;
 using ImageFactory.Models;
 using IPA.Utilities;
-using SiraUtil.Tools;
+using SiraUtil.Logging;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -27,7 +27,7 @@ namespace ImageFactory.UI
         private DiContainer _container = null!;
         private ViewController _dummyView = null!;
         private ImageManager _imageManager = null!;
-        private FloatingScreen _floatingScreen = null!; 
+        private FloatingScreen _floatingScreen = null!;
         private InputFieldView _editorFieldView = null!;
         private InputFieldView _templateFieldView = null!;
         private ImageEditorManager _imageEditorManager = null!;
@@ -116,14 +116,10 @@ namespace ImageFactory.UI
             // Then, resize the handle accordingly, setup our editor sprite instance,
             // set the position of our handle TO the image and THEN make the sprite a
             // child of the handle screen.
-            _siraLog.Null(_floatingScreen);
-            _siraLog.Null(_floatingScreen.handle);
-            _siraLog.Null(_dummyView);
             _floatingScreen.gameObject.SetActive(true);
             _floatingScreen.SetRootViewController(_dummyView, AnimationType.None);
             _floatingScreen.handle.transform.localScale = Vector3.one / 5f * saveData.Size;
             _floatingScreen.handle.gameObject.transform.localPosition = Vector3.zero;
-            _siraLog.Info("7");
             Transform tForm = _imageEditorManager.Present(image, saveData, clone =>
             {
                 var val = _presentationHost.Export();
@@ -136,7 +132,6 @@ namespace ImageFactory.UI
                 saveData.Presentation.PresentationID = val.Item1;
                 saveData.Presentation.Duration = val.Item3 ?? 0f;
                 saveData.Presentation.Value = val.Item2;
-
                 if (string.IsNullOrWhiteSpace(saveData.Presentation.PresentationID))
                     saveData.Presentation.PresentationID = Presenters.ScenePresenter.EVERYWHERE_ID;
 
@@ -183,6 +178,7 @@ namespace ImageFactory.UI
         [UIAction("#post-parse")]
         protected void Parsed()
         {
+            _siraLog.Info("did parse");
             _inputRoot.GetComponent<ContentSizeFitter>().enabled = false;
             _editorFieldView = _container.InstantiatePrefabForComponent<InputFieldView>(_templateFieldView.gameObject, _inputRoot.transform);
             _editorFieldView.SetField("_keyboardPositionOffset", new Vector3(0f, -20f, 0f));

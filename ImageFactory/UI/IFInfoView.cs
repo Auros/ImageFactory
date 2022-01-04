@@ -129,9 +129,9 @@ namespace ImageFactory.UI
             _settingsImage.sprite = await _spriteAsyncLoader.LoadSpriteAsync("settings.png", CancellationToken.None);
             _resetImage.sprite = await _spriteAsyncLoader.LoadSpriteAsync("reset.png", CancellationToken.None);
             _helpImage.sprite = await _spriteAsyncLoader.LoadSpriteAsync("help.png", CancellationToken.None);
-            _githubImage.sprite = await _spriteAsyncLoader.LoadSpriteAsync("https://cdn.sira.pro/images/common/github.png", CancellationToken.None);
-            _bandootImage.sprite = await _spriteAsyncLoader.LoadSpriteAsync("https://cdn.sira.pro/images/common/bandoot.png", CancellationToken.None);
-            _aurosImage.sprite = await _spriteAsyncLoader.LoadSpriteAsync("https://cdn.sira.pro/images/common/auros.png", CancellationToken.None);
+            _githubImage.sprite = await _spriteAsyncLoader.LoadSpriteAsync("https://cdn.project-sira.tech/images/common/github.png", CancellationToken.None);
+            _bandootImage.sprite = await _spriteAsyncLoader.LoadSpriteAsync("https://cdn.project-sira.tech/images/common/bandoot.png", CancellationToken.None);
+            _aurosImage.sprite = await _spriteAsyncLoader.LoadSpriteAsync("https://cdn.project-sira.tech/images/common/auros.png", CancellationToken.None);
 
             _settingsImage.material = Utilities.UINoGlowRoundEdge;
             _resetImage.material = Utilities.UINoGlowRoundEdge;
@@ -171,7 +171,7 @@ namespace ImageFactory.UI
                 "ImageFactory is open source! You can view it on GitHub. Have a bug report or a feature request? Submit an issue on GitHub.",
                 "Open Github in Browser",
                 _githubImage.sprite,
-                () => { Application.OpenURL("https://github.com/Auros/ImageFactory"); }); 
+                () => { Application.OpenURL("https://github.com/Auros/ImageFactory"); });
 
             _bandootSubIcon = new ClickableSubIcon(
                 "Bandoot",
@@ -185,7 +185,7 @@ namespace ImageFactory.UI
                 "ImageFactory was made by me (Auros). If you'd like to support me, you can go to my <color=green>donation</color> page below.",
                 "Opens <color=green>Ko-Fi</color> in Browser",
                 _aurosImage.sprite,
-                () => { Application.OpenURL("https://ko-fi.com/aurosnex"); }); 
+                () => { Application.OpenURL("https://ko-fi.com/aurosnex"); });
         }
 
         private void PresentSubIcon(ClickableSubIcon icon)
