@@ -1,5 +1,7 @@
 ﻿using ImageFactory.Managers;
 using ImageFactory.Models;
+using IPA.Utilities.Async;
+using System;
 using System.Threading.Tasks;
 using Tweening;
 using UnityEngine;
@@ -112,9 +114,16 @@ namespace ImageFactory.Components
             _spriteRenderer = renderer;
         }
 
-        protected async void Start()
+        protected void Start()
         {
-            _spriteRenderer.material = await _resourceLoader.LoadSpriteMaterial();
+            UnityMainThreadTaskScheduler.Factory.StartNew(async () =>
+            {
+                try
+                {
+                    _spriteRenderer.material = await _resourceLoader.LoadSpriteMaterial();
+                }
+                catch { }
+            });
         }
 
         protected void OnEnable()

@@ -12,17 +12,17 @@ namespace ImageFactory.Presenters
     {
         private readonly Config _config;
         private readonly ImageManager _imageManager;
-        private readonly ScoreController _scoreController;
+        private readonly IComboController _comboController;
         private readonly List<SaveImage> _savedImages = new List<SaveImage>();
         private readonly Dictionary<SaveImage, IFSprite> _activeSprites = new Dictionary<SaveImage, IFSprite>();
 
         public const string FULLCOMBO_ID = "Full Combo";
 
-        public FullComboPresenter(Config config, ImageManager imageManager, ScoreController scoreController)
+        public FullComboPresenter(Config config, ImageManager imageManager, IComboController comboController)
         {
             _config = config;
             _imageManager = imageManager;
-            _scoreController = scoreController;
+            _comboController = comboController;
         }
 
         public async void Initialize()
@@ -44,7 +44,7 @@ namespace ImageFactory.Presenters
                     }
                 }
             }
-            _scoreController.comboBreakingEventHappenedEvent += ComboDropped;
+            _comboController.comboBreakingEventHappenedEvent += ComboDropped;
         }
 
         private void ComboDropped()
@@ -57,7 +57,7 @@ namespace ImageFactory.Presenters
         {
             foreach (var sprite in _activeSprites)
                 _imageManager.Despawn(sprite.Value, true);
-            _scoreController.comboBreakingEventHappenedEvent -= ComboDropped;
+            _comboController.comboBreakingEventHappenedEvent -= ComboDropped;
         }
 
         private class SaveImage

@@ -17,26 +17,25 @@ namespace ImageFactory.Presenters
 
         private readonly Config _config;
         private readonly ImageManager _imageManager;
-        private readonly IDifficultyBeatmap _difficultyBeatmap;
+        private readonly IReadonlyBeatmapData _readonlyBeatmapData;
         private readonly BeatmapObjectManager _beatmapObjectManager;
         private readonly List<SaveImage> _savedImages = new List<SaveImage>();
         private readonly Dictionary<SaveImage, IFSprite> _activeSprites = new Dictionary<SaveImage, IFSprite>();
 
-        public LastNotePresenter(Config config, ImageManager imageManager, IDifficultyBeatmap difficultyBeatmap, BeatmapObjectManager beatmapObjectManager)
+        public LastNotePresenter(Config config, ImageManager imageManager, IReadonlyBeatmapData readonlyBeatmapData, BeatmapObjectManager beatmapObjectManager)
         {
             _config = config;
             _imageManager = imageManager;
-            _difficultyBeatmap = difficultyBeatmap;
+            _readonlyBeatmapData = readonlyBeatmapData;
             _beatmapObjectManager = beatmapObjectManager;
         }
 
         public async void Initialize()
         {
-            foreach (var line in _difficultyBeatmap.beatmapData.beatmapLinesData)
-                foreach (var data in line.beatmapObjectsData)
-                    if (data.beatmapObjectType == BeatmapObjectType.Note && data is NoteData note && note.colorType != ColorType.None)
-                        if (data.time > _lastNoteTime)
-                            _lastNoteTime = data.time;
+            foreach (var data in _readonlyBeatmapData.allBeatmapDataItems)
+                if (data.type == BeatmapDataItem.BeatmapDataItemType.BeatmapObject && data is NoteData note && note.colorType != ColorType.None)
+                    if (data.time > _lastNoteTime)
+                        _lastNoteTime = data.time;
 
             _lastNoteTime -= 0.01f;
             var saves = _config.SaveData.Where(sd => sd.Enabled && sd.Presentation.PresentationID == LASTNOTE_ID);

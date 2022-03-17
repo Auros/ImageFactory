@@ -3,11 +3,11 @@
   "id": "ImageFactory",
   "name": "ImageFactory",
   "author": "Auros",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Place and customize images throughout your game.",
-  "gameVersion": "1.19.0",
+  "gameVersion": "1.20.0",
   "dependsOn": {
-    "BSIPA": "^4.2.0",
+    "BSIPA": "^4.2.1",
     "SiraUtil": "^3.0.0",
     "BeatSaberMarkupLanguage": "^1.4.0"
   }

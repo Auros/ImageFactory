@@ -15,7 +15,7 @@ namespace ImageFactory.Presenters
         private readonly Config _config;
         private readonly SiraLog _siraLog;
         private readonly ImageManager _imageManager;
-        private readonly ScoreController _scoreController;
+        private readonly IComboController _comboController;
         private readonly List<SaveImage> _savedImages = new List<SaveImage>();
         private readonly Dictionary<SaveImage, IFSprite> _activeSprites = new Dictionary<SaveImage, IFSprite>();
 
@@ -24,12 +24,12 @@ namespace ImageFactory.Presenters
         public const string COMBO_DROP = "Combo Drop";
         public const string COMBO_HOLD = "Combo Hold";
 
-        public ComboPresenter(Config config, SiraLog siraLog, ImageManager imageManager, ScoreController scoreController)
+        public ComboPresenter(Config config, SiraLog siraLog, ImageManager imageManager, IComboController comboController)
         {
             _config = config;
             _siraLog = siraLog;
             _imageManager = imageManager;
-            _scoreController = scoreController;
+            _comboController = comboController;
         }
 
         public async void Initialize()
@@ -82,8 +82,8 @@ namespace ImageFactory.Presenters
                     }
                 }
             }
-            _scoreController.comboDidChangeEvent += ComboChanged;
-            _scoreController.comboBreakingEventHappenedEvent += ComboDropped;
+            _comboController.comboDidChangeEvent += ComboChanged;
+            _comboController.comboBreakingEventHappenedEvent += ComboDropped;
             ComboChanged(0);
         }
 
@@ -159,8 +159,8 @@ namespace ImageFactory.Presenters
         {
             foreach (var sprite in _activeSprites)
                 _imageManager.Despawn(sprite.Value, true);
-            _scoreController.comboBreakingEventHappenedEvent -= ComboDropped;
-            _scoreController.comboDidChangeEvent -= ComboChanged;
+            _comboController.comboBreakingEventHappenedEvent -= ComboDropped;
+            _comboController.comboDidChangeEvent -= ComboChanged;
         }
 
         private class SaveImage
