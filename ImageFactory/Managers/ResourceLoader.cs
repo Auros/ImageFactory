@@ -27,13 +27,12 @@ namespace ImageFactory.Managers
         public async Task<Material> LoadSpriteMaterial()
         {
             while (_isProcessing)
-                await Task.Delay(10);
+                await Task.Yield();
 
             if (_cachedMaterial != null)
                 return _cachedMaterial;
 
             _isProcessing = true;
-
             using Stream stream = _pluginAssembly.GetManifestResourceStream(RESOURCE_PATH);
             using MemoryStream ms = new MemoryStream();
             await stream.CopyToAsync(ms);
@@ -44,19 +43,13 @@ namespace ImageFactory.Managers
             var bundle = AssetBundle.LoadFromMemoryAsync(ms.ToArray());
             while (!bundle.isDone)
                 await Task.Yield();
-            if (_cachedMaterial != null)
-                return _cachedMaterial;
 
             _bundle = bundle.assetBundle;
             var spriteReq = bundle.assetBundle.LoadAssetAsync<GameObject>("_Sprite");
             while (!spriteReq.isDone)
                 await Task.Yield();
 
-            if (_cachedMaterial != null)
-                return _cachedMaterial;
-
             _cachedMaterial = ((GameObject)spriteReq.asset).GetComponent<Renderer>().material;
-
             _bundle.Unload(false);
             _isProcessing = false;
             return _cachedMaterial;
