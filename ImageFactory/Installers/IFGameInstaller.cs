@@ -25,6 +25,7 @@ namespace ImageFactory.Installers
             Container.BindInterfacesTo<FullComboPresenter>().AsSingle();
             Container.BindInterfacesTo<LastNotePresenter>().AsSingle();
             Container.BindInterfacesTo<PercentPresenter>().AsSingle();
+            Container.BindInterfacesTo<EnergyPresenter>().AsSingle();
             Container.BindInterfacesTo<ComboPresenter>().AsSingle();
         }
     }

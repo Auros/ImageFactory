@@ -32,6 +32,10 @@ namespace ImageFactory.Managers
                 new Value(ComboPresenter.COMBO_HOLD, false, new ValueConstructor("When", "Above", new List<object> { "Below", "Above" }), new ValueConstructor("Combo", 100, xcast)),
                 new Value(ComboPresenter.COMBO_DROP, true),
                 new Value(FullComboPresenter.FULLCOMBO_ID, false),
+                new Value(EnergyPresenter.ENERGY_ID, false, new ValueConstructor("When", "Below", new List<object> { "Below", "Above" }), new ValueConstructor("%", 0.5f, casted)),
+                new Value(EnergyPresenter.ENERGY_RANGE_ID, false, new ValueConstructor("When Above (%)", 0.5f, casted), new ValueConstructor("and Below (%)", 0.6f, casted)),
+                new Value(EnergyPresenter.ENERGY_FULL_ID),
+                new Value(EnergyPresenter.ENERGY_DEPLETED_ID),
                 new Value(PausePresenter.PAUSE_ID, false),
                 new Value(LastNotePresenter.LASTNOTE_ID, true)
             };
