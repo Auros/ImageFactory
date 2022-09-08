@@ -32,7 +32,7 @@ Option: **When**
 The image will only appear when in the song.
 
 ### %
-The image will only appear if you are above or below a cetain score percentage
+The image will only appear if you are above or below a certain score percentage
 
 Option: **When**
 - Before: The image will appear when you are below the defined score percentage.
@@ -88,6 +88,31 @@ Option: **Duration**
 
 ### Full Combo
 The image will appear as long as you are holding a full combo.
+
+### Energy
+The image will only appear if you are above or below a certain energy (health) percentage
+
+Option: **When**
+- Before: The image will appear when you are below the defined energy percentage.
+- After: The image will appear when you are above the defined energy percentage.
+
+Option **%**
+- Percent: The defined energy percentage that your image will appear above or below
+
+### Energy Range
+The image will only appear if you are between a range of energy percentages.
+
+Option: **When Above (%)**
+- Percent: The defined energy percentage that your image will appear above.
+
+Option: **When Below (%)**
+- Percent: The defined energy percentage that your image will appear below.
+
+### Energy Full
+The image will appear while your energy is full
+
+### Energy Depleted
+The image will appear if your energy reaches zero
 
 ### In Pause Menu
 The image will appear when you enter the pause menu and disappear when you exit the pause menu.
